@@ -1,5 +1,5 @@
-{-# Language OverloadedStrings #-}
 module Advent.Day2Spec (spec) where
+
   import Test.Hspec
   import Advent.Day2 (day2a, day2b, difference)
   import System.Directory
@@ -18,3 +18,7 @@ module Advent.Day2Spec (spec) where
           difference "7 5 3" `shouldBe` 4
         it "find difference" $ do
           difference "2 4 6 8" `shouldBe` 6
+      it "finds the sum of rows" $ do
+        dir <- getCurrentDirectory
+        csv <- readFile (dir ++ "/test/day2.csv")
+        day2a csv `shouldBe` 18
