@@ -1,7 +1,7 @@
 module Advent.Day2Spec (spec) where
 
   import Test.Hspec
-  import Advent.Day2 (day2a, day2b, difference)
+  import Advent.Day2 (day2a, day2b)
   import System.Directory
 
   main :: IO ()
@@ -11,14 +11,12 @@ module Advent.Day2Spec (spec) where
   spec :: Spec
   spec = do
     describe "day2a" $ do
-      describe "difference" $ do
-        it "find difference" $ do
-          difference "5 1 9 5" `shouldBe` 8
-        it "find difference" $ do
-          difference "7 5 3" `shouldBe` 4
-        it "find difference" $ do
-          difference "2 4 6 8" `shouldBe` 6
       it "finds the sum of rows" $ do
         dir <- getCurrentDirectory
         csv <- readFile (dir ++ "/test/day2.csv")
         day2a csv `shouldBe` 18
+    describe "day2b" $ do
+      it "find evenly dividable number" $ do
+        dir <- getCurrentDirectory
+        csv <- readFile (dir ++ "/test/day2b.csv")
+        day2b csv `shouldBe` 9
