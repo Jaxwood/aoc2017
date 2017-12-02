@@ -18,7 +18,7 @@ module Advent.Day1Spec (spec) where
         day1a "1234" `shouldBe` 0
       it "only last digit matches" $ do
         day1a "91212129" `shouldBe` 9
-      it "solution" $ do
+      it "with input" $ do
         dir <- getCurrentDirectory
         csv <- readFile (dir ++ "/test/day1.csv")
-        day1a csv `shouldBe` 0
+        day1a csv `shouldBe` 1223
