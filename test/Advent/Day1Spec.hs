@@ -1,6 +1,6 @@
 module Advent.Day1Spec (spec) where
   import Test.Hspec
-  import Advent.Day1 (day1a)
+  import Advent.Day1 (day1a, day1b)
   import System.Directory
 
   main :: IO ()
@@ -22,3 +22,19 @@ module Advent.Day1Spec (spec) where
         dir <- getCurrentDirectory
         csv <- readFile (dir ++ "/test/day1.csv")
         day1a csv `shouldBe` 1223
+    describe "day1b" $ do
+      describe "all digit matches" $ do
+        it "1212" $ do
+          day1b "1212" `shouldBe` 6
+        it "123123" $ do
+          day1b "123123" `shouldBe` 12
+      it "no digit match" $ do
+        day1b "1221" `shouldBe` 0
+      it "one digit match" $ do
+        day1b "123425" `shouldBe` 4
+      it "no digit pattern" $ do
+        day1b "12131415" `shouldBe` 4
+      it "with input" $ do
+        dir <- getCurrentDirectory
+        csv <- readFile (dir ++ "/test/day1.csv")
+        day1b csv `shouldBe` 1284
