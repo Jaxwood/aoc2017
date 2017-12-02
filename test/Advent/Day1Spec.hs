@@ -1,9 +1,11 @@
 module Advent.Day1Spec (spec) where
   import Test.Hspec
   import Advent.Day1 (day1a)
+  import System.Directory
 
   main :: IO ()
-  main = hspec spec
+  main = do
+    hspec spec
 
   spec :: Spec
   spec = do
@@ -16,3 +18,7 @@ module Advent.Day1Spec (spec) where
         day1a "1234" `shouldBe` 0
       it "only last digit matches" $ do
         day1a "91212129" `shouldBe` 9
+      it "solution" $ do
+        dir <- getCurrentDirectory
+        csv <- readFile (dir ++ "/test/day1.csv")
+        day1a csv `shouldBe` 0
