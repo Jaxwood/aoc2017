@@ -6,7 +6,7 @@ module Advent.Day2 (day2a, day2b) where
   day2a = sum . map difference . lines
 
   day2b :: String -> Int
-  day2b = sum . map (diviable . sort . map read . words) . lines
+  day2b = sum . map (dividable . sort . map read . words) . lines
 
   difference :: String -> Int
   difference s = max'' - min''
@@ -14,8 +14,8 @@ module Advent.Day2 (day2a, day2b) where
                        max'' = maximum s'
                        min'' = minimum s'
 
-  diviable :: [Int] -> Int
-  diviable (x:xs) = if null xs' then diviable xs else sum $ map (\x' -> x' `div` x) xs' 
+  dividable :: [Int] -> Int
+  dividable (x:xs) = if null xs' then dividable xs else sum $ map (\x' -> x' `div` x) xs' 
                       where xs' = filter (\x' -> x' `mod` x == 0) xs
-  diviable [] = 0
+  dividable [] = 0
     
