@@ -11,7 +11,7 @@ module Advent.Day2Spec (spec) where
   spec :: Spec
   spec = do
     describe "day2a" $ do
-      it "finds the sum of rows" $ do
+      it "find the sum of rows" $ do
         dir <- getCurrentDirectory
         csv <- readFile (dir ++ "/test/day2.csv")
         day2a csv `shouldBe` 18

@@ -1,4 +1,4 @@
-module Advent.Day2 (day2a, day2b, difference, diviable) where
+module Advent.Day2 (day2a, day2b) where
 
   import Data.List
 
