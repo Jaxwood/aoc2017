@@ -1,7 +1,7 @@
 module Advent.Day3 (day3a, day3b) where
 
   day3a :: Int -> Int
-  day3a a = (\(a,b) -> (abs a) + (abs b)) $ coords !! a
+  day3a a = (\(a,b) -> (abs a) + (abs b)) $ coords !! (pred a)
 
   day3b :: Int -> Int
   day3b = id
@@ -19,7 +19,7 @@ module Advent.Day3 (day3a, day3b) where
   decY (a,b) = (a,pred b)
 
   operations :: [(Int,Int) -> (Int,Int)]
-  operations = cycle [addY,decX,decY,addX]
+  operations = cycle [decX,decY,addX,addY]
 
   intList :: Int -> [[Int]]
   intList n =  concat [take 2 $ repeat $ replicate x x | x <- [2..n]]
