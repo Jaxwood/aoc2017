@@ -12,8 +12,8 @@ module Advent.Day4Spec (spec) where
   spec = do
     describe "day4a" $ do
       it "no duplicate" $ do
-        day4a "aa bb cc dd ee" `shouldBe` True
+        day4a "aa bb cc dd ee" `shouldBe` 1
       it "duplicate" $ do
-        day4a "aa bb cc dd ee aa" `shouldBe` False
+        day4a "aa bb cc dd ee aa" `shouldBe` 0
       it "duplicate but different length" $ do
-        day4a "aa bb cc dd ee aaa" `shouldBe` True
+        day4a "aa bb cc dd ee aaa" `shouldBe` 1
