@@ -11,9 +11,9 @@ module Advent.Day5 (day5a, day5b) where
   jumps :: Int -> Int -> [Int] -> Int
   jumps idx acc xs = if length xs <= idx
                      then 
-                       succ acc
+                       acc
                      else
                        let x = xs !! idx
-                           idx' = if x == 0 then idx + 1 else idx + x
+                           idx' = if x == 0 then idx else idx + x
                            (f,(l:ls)) = splitAt idx xs
-                       in jumps idx' (succ acc) (f ++ ((succ l):ls)) 
+                       in jumps idx' (succ acc) $ f ++ (succ l):ls
