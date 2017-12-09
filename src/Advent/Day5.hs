@@ -3,7 +3,17 @@ module Advent.Day5 (day5a, day5b) where
   import Data.List
 
   day5a :: String -> Int
-  day5a a = 0
+  day5a = jumps 0 0 . map read . lines
 
   day5b :: String -> Int
   day5b a = 0
+
+  jumps :: Int -> Int -> [Int] -> Int
+  jumps idx acc xs = if length xs <= idx
+                     then 
+                       succ acc
+                     else
+                       let x = xs !! idx
+                           idx' = if x == 0 then idx + 1 else idx + x
+                           (f,(l:ls)) = splitAt idx xs
+                       in jumps idx' (succ acc) (f ++ ((succ l):ls)) 
