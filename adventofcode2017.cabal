@@ -27,6 +27,7 @@ library
                      , Advent.Day5
   build-depends:       base >= 4.7 && < 5
                      , text
+                     , containers
   default-language:    Haskell2010
 
 test-suite adventofcode2017-test
@@ -38,6 +39,7 @@ test-suite adventofcode2017-test
                      , hspec
                      , directory
                      , text
+                     , containers
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   other-modules:
                        Advent.Day1Spec
