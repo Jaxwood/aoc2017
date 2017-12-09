@@ -15,3 +15,8 @@ module Advent.Day5Spec (spec) where
         dir <- getCurrentDirectory
         csv <- readFile (dir ++ "/test/day5.csv")
         day5a csv  `shouldBe` 5
+    describe "day5b" $ do
+      it "reach exit" $ do
+        dir <- getCurrentDirectory
+        csv <- readFile (dir ++ "/test/day5.csv")
+        day5b csv  `shouldBe` 10
