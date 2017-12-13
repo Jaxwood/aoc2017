@@ -3,14 +3,26 @@ module Advent.Day6 (day6a, day6b) where
   import Data.List
 
   day6a :: String -> Int
-  day6a a = findMax [] $ map read $ words a
+  day6a a = length $ findMax [] $ map read $ words a
 
   day6b :: String -> Int
-  day6b a = 0
+  day6b a = let a' = findMax [] $ map read $ words a
+                lst = last a'
+                m = maximum lst
+                idx = findIndex ((==)m) lst
+            in length $ findNext lst [] (redistribute lst m idx)
 
-  findMax :: [[Int]] -> [Int] -> Int
+  findNext :: [Int] -> [[Int]] -> [Int] -> [[Int]]
+  findNext candidate acc xs
+    | candidate `elem` acc = acc
+    | otherwise = let m = maximum xs
+                      idx = findIndex ((==)m) xs
+                      next = redistribute xs m idx
+                  in findNext candidate (xs:acc) next
+
+  findMax :: [[Int]] -> [Int] -> [[Int]]
   findMax acc xs
-    | xs `elem` acc = length acc
+    | xs `elem` acc = acc
     | otherwise = let m = maximum xs
                       idx = findIndex ((==)m) xs
                       candidate = redistribute xs m idx
