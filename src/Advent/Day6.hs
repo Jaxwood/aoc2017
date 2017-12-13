@@ -7,7 +7,7 @@ module Advent.Day6 (day6a, day6b) where
 
   day6b :: String -> Int
   day6b a = let a' = findMax [] $ map read $ words a
-                lst = last a'
+                lst = head a'
                 m = maximum lst
                 idx = findIndex ((==)m) lst
             in length $ findNext lst [] (redistribute lst m idx)
