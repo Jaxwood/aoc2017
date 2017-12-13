@@ -30,6 +30,7 @@ library
   build-depends:       base >= 4.7 && < 5
                      , text
                      , containers
+                     , parsec
   default-language:    Haskell2010
 
 test-suite adventofcode2017-test
@@ -42,6 +43,7 @@ test-suite adventofcode2017-test
                      , directory
                      , text
                      , containers
+                     , parsec
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   other-modules:
                        Advent.Day1Spec

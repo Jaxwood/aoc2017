@@ -14,7 +14,7 @@ module Advent.Day7Spec (spec) where
       it "reach exit" $ do
         dir <- getCurrentDirectory
         csv <- readFile (dir ++ "/test/day7.csv")
-        day7a csv  `shouldBe` ""
+        day7a csv  `shouldBe` []
     describe "day7b" $ do
       it "reach exit" $ do
         dir <- getCurrentDirectory
