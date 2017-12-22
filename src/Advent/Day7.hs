@@ -1,19 +1,29 @@
-module Advent.Day7 (day7a, day7b) where
+module Advent.Day7 (day7a, day7b, Tower(Tower)) where
 
   import Data.List
+  import Data.Either
   import Text.Parsec
   import Text.Parsec.String
 
   data Tower = Tower String Int [String] deriving (Eq, Show)
 
-  day7a :: String -> [Either ParseError Tower]
-  day7a = map parseInput . lines
+  day7a :: String -> String
+  day7a = withId . head . parent . rights . map parseInput . lines
 
   day7b :: String -> String
   day7b = id
-    
+
+  withId :: Tower -> String
+  withId (Tower s _ _) = s
+
+  parent :: [Tower] -> [Tower]
+  parent xs = filter (\x -> x `elem'` xs == False) xs
+
+  elem' :: Tower -> [Tower] -> Bool
+  elem' (Tower t _ _) ts = any (\(Tower _ _ ts') -> t `elem` ts') ts
+
   parseInput :: String -> Either ParseError Tower
-  parseInput =  parse (choice [try parseNode, parseLeaf]) ""
+  parseInput a =  parse (choice [try parseNode, parseLeaf]) "" a
 
   parseNode :: Parser Tower
   parseNode = do
