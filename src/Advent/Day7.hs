@@ -8,7 +8,7 @@ module Advent.Day7 (day7a, day7b, Tower(Tower)) where
   data Tower = Tower String Int [String] deriving (Eq, Show)
 
   day7a :: String -> String
-  day7a = withId . head . parent . rights . map parseInput . lines
+  day7a = withId . root . rights . map parseInput . lines
 
   day7b :: String -> String
   day7b = id
@@ -16,11 +16,11 @@ module Advent.Day7 (day7a, day7b, Tower(Tower)) where
   withId :: Tower -> String
   withId (Tower s _ _) = s
 
-  parent :: [Tower] -> [Tower]
-  parent xs = filter (\x -> x `elem'` xs == False) xs
+  root :: [Tower] -> Tower
+  root xs = head $ filter (not . elem' xs) xs
 
-  elem' :: Tower -> [Tower] -> Bool
-  elem' (Tower t _ _) ts = any (\(Tower _ _ ts') -> t `elem` ts') ts
+  elem' :: [Tower] -> Tower -> Bool
+  elem' ts (Tower t _ _) = any (\(Tower _ _ ts') -> t `elem` ts') ts
 
   parseInput :: String -> Either ParseError Tower
   parseInput a =  parse (choice [try parseNode, parseLeaf]) "" a
