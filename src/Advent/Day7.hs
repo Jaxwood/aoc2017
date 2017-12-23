@@ -1,26 +1,49 @@
-module Advent.Day7 (day7a, day7b, Tower(Tower)) where
+module Advent.Day7 (day7a, day7b) where
 
   import Data.List
   import Data.Either
+  import Data.Tree
   import Text.Parsec
   import Text.Parsec.String
 
   data Tower = Tower String Int [String] deriving (Eq, Show)
 
   day7a :: String -> String
-  day7a = withId . root . rights . map parseInput . lines
+  day7a = (\(Tower a _ _) -> a) . root . rights . map parseInput . lines
 
-  day7b :: String -> String
-  day7b = id
+  day7b :: String -> Int
+  day7b t = let (Node _ s) = (buildTree . rights . map parseInput . lines) t
+                tt = map (\(Node a _) -> snd a) s 
+                ts = map sumChildren s
+                gs = (maximum ts) - (minimum ts)
+                o = head $ concatMap id $ filter (\x -> length x == 1) $ group $ sort ts
+                (a,b) = head $ filter (\(a,b) -> b == o) $ zip tt ts
+            in a - gs
 
-  withId :: Tower -> String
-  withId (Tower s _ _) = s
+  sumChildren :: Tree (String, Int) -> Int
+  sumChildren (Node (_,i) is) = i + sum (map sumChildren is)
+
+  buildTree :: [Tower] -> Tree (String, Int)
+  buildTree ts = let (Tower a b c) = root ts
+                 in Node (a,b) $ getChildren c ts
+
+  getChildren :: [String] -> [Tower] -> [Tree (String, Int)]
+  getChildren ss tt = let tt' = map (\s -> (!!!) s tt) ss
+                      in map (getChild tt) tt'
+
+  getChild :: [Tower] -> Maybe Tower -> Tree (String, Int)
+  getChild tt t = case t of
+      Nothing -> Node ("",0) []
+      Just (Tower a b c) -> Node (a, b) $ getChildren c tt
 
   root :: [Tower] -> Tower
   root xs = head $ filter (not . elem' xs) xs
 
   elem' :: [Tower] -> Tower -> Bool
   elem' ts (Tower t _ _) = any (\(Tower _ _ ts') -> t `elem` ts') ts
+
+  (!!!) :: String -> [Tower] -> Maybe Tower
+  (!!!) a ts = find (\(Tower a' _ _) -> a == a') ts
 
   parseInput :: String -> Either ParseError Tower
   parseInput a =  parse (choice [try parseNode, parseLeaf]) "" a
