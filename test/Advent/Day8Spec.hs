@@ -1,7 +1,7 @@
 module Advent.Day8Spec (spec) where
 
   import Test.Hspec
-  import Advent.Day8 (day8a, day8b)
+  import Advent.Day8 (day8a, day8b, Ast(Ast))
   import System.Directory
 
   main :: IO ()
@@ -14,7 +14,7 @@ module Advent.Day8Spec (spec) where
       it "reach exit" $ do
         dir <- getCurrentDirectory
         csv <- readFile (dir ++ "/test/day8.csv")
-        day8a csv  `shouldBe` ""
+        day8a csv  `shouldBe` []
     describe "day8b" $ do
       it "reach exit" $ do
         dir <- getCurrentDirectory
