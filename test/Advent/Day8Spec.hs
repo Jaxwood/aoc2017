@@ -1,7 +1,7 @@
 module Advent.Day8Spec (spec) where
 
   import Test.Hspec
-  import Advent.Day8 (day8a, day8b, Ast(Ast))
+  import Advent.Day8 (day8a, day8b)
   import System.Directory
 
   main :: IO ()

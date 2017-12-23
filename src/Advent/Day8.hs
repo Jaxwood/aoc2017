@@ -1,4 +1,4 @@
-module Advent.Day8 (day8a, day8b, Ast(Ast)) where
+module Advent.Day8 (day8a, day8b) where
 
   import Data.Either
   import Data.List
@@ -10,7 +10,7 @@ module Advent.Day8 (day8a, day8b, Ast(Ast)) where
   type Number = Int
   type Variable = String
   data Test = Test Variable Condition Number deriving (Show,Eq)
-  data Ast = Ast Variable Operation Number Test deriving (Show,Eq)
+  data Ast = Consequent Variable Operation Number Test deriving (Show,Eq)
 
   day8a :: String -> [Ast]
   day8a = rights . map parseInput . lines
@@ -36,7 +36,7 @@ module Advent.Day8 (day8a, day8b, Ast(Ast)) where
     o' <- many1 $ oneOf "><=!"
     _ <- space
     n' <- many1 $ choice [try $ char '-', digit]
-    return $ Ast l (if o == "dec" then Dec else Inc) (read n) (Test l' (getCondition o') (read n'))
+    return $ Consequent l (if o == "dec" then Dec else Inc) (read n) (Test l' (getCondition o') (read n'))
 
   getCondition:: String -> Condition
   getCondition o = case o of
