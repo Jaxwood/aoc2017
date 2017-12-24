@@ -41,8 +41,12 @@ module Advent.Day8 (day8a, day8b) where
   update' v o n m = 
     let v' = M.lookup v m
     in case v' of
-      Nothing -> M.insert v (operation 0 n o) m
-      Just v'' -> M.insert v (operation v'' n o) m
+      Nothing -> let a = operation 0 n o
+                     b = M.adjust (\x -> max x a) "_max" m
+                 in M.insert v a b
+      Just v'' -> let a = operation v'' n o
+                      b = M.adjust (\x -> max x a) "_max" m
+                  in M.insert v a b
 
   operation :: Number -> Number -> Operation -> Number
   operation n n' o =
