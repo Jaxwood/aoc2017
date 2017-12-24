@@ -20,4 +20,4 @@ module Advent.Day8Spec (spec) where
       it "reach exit" $ do
         dir <- getCurrentDirectory
         csv <- readFile (dir ++ "/test/day8.csv")
-        day8b csv  `shouldBe` 0
+        day8b csv  `shouldBe` 10

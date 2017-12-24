@@ -17,7 +17,7 @@ module Advent.Day8 (day8a, day8b) where
   day8a = largest . foldl interpretate M.empty . rights . map parseInput . lines
 
   day8b :: String -> Int
-  day8b s = 0
+  day8b = largest . foldl interpretate' (M.insert "_max" 0 M.empty) . rights . map parseInput . lines
 
   largest :: M.Map String Int -> Int
   largest m = foldl' (\acc v -> max acc v) 0 m
@@ -26,8 +26,19 @@ module Advent.Day8 (day8a, day8b) where
   interpretate m (Consequent v o n (Test v' c n')) =
     if condition c v' n' m then update v o n m else m
 
+  interpretate' :: M.Map String Int -> Ast -> M.Map String Int
+  interpretate' m (Consequent v o n (Test v' c n')) =
+    if condition c v' n' m then update' v o n m else m
+
   update :: Variable -> Operation -> Number -> M.Map String Int -> M.Map String Int
   update v o n m = 
+    let v' = M.lookup v m
+    in case v' of
+      Nothing -> M.insert v (operation 0 n o) m
+      Just v'' -> M.insert v (operation v'' n o) m
+
+  update' :: Variable -> Operation -> Number -> M.Map String Int -> M.Map String Int
+  update' v o n m = 
     let v' = M.lookup v m
     in case v' of
       Nothing -> M.insert v (operation 0 n o) m
