@@ -13,11 +13,14 @@ module Advent.Day8 (day8a, day8b) where
   data Test = Test Variable Condition Number deriving (Show,Eq)
   data Ast = Consequent Variable Operation Number Test deriving (Show,Eq)
 
-  day8a :: String -> M.Map String Int
-  day8a = foldl interpretate M.empty . rights . map parseInput . lines
+  day8a :: String -> Int
+  day8a = largest . foldl interpretate M.empty . rights . map parseInput . lines
 
   day8b :: String -> Int
   day8b s = 0
+
+  largest :: M.Map String Int -> Int
+  largest m = foldl' (\acc v -> max acc v) 0 m
 
   interpretate :: M.Map String Int -> Ast -> M.Map String Int
   interpretate m (Consequent v o n (Test v' c n')) =
