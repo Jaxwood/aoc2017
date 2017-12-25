@@ -8,11 +8,12 @@ module Advent.Day9 (day9a, day9b) where
 
   parse :: Int -> String -> Int
   parse acc [] = acc
-  parse acc ('{':xs) = parseEnd acc xs
+  parse acc ('{':xs) = let (xs',acc') = parseEnd 1 (succ acc) xs
+                       in parse acc' xs'
   parse acc (x:xs) = parse acc xs
 
-  parseEnd :: Int -> String -> Int
-  parseEnd acc ('{':xs) = parseEnd (succ acc) xs
-  parseEnd acc ('}':xs) = parse (succ acc) xs
-  parseEnd acc (x:xs) = parseEnd acc xs
+  parseEnd :: Int -> Int -> String -> (String, Int)
+  parseEnd acc' acc ('{':xs) = parseEnd (succ acc') (acc + succ acc') xs
+  parseEnd acc' acc ('}':xs) = if acc' == 1 then (xs, acc) else parseEnd (pred acc') acc xs
+  parseEnd acc' acc (x:xs) = parseEnd acc' acc xs
 
