@@ -4,7 +4,7 @@ module Advent.Day9 (day9a, day9b) where
   day9a = parse 0
 
   day9b :: String -> Int
-  day9b s = 0
+  day9b = parse' 0
 
   parse :: Int -> String -> Int
   parse acc [] = acc
@@ -23,3 +23,16 @@ module Advent.Day9 (day9a, day9b) where
   parseGarbage ('!':'>':xs) = parseGarbage xs
   parseGarbage ('>':xs) = xs
   parseGarbage (x:xs) = parseGarbage xs
+
+  parse' :: Int -> String -> Int
+  parse' acc [] = acc
+  parse' acc ('<':xs) = let (xs', acc') = countGarbage acc xs
+                        in parse' acc' xs'
+  parse' acc (x:xs) = parse' acc xs
+
+  countGarbage :: Int -> String -> (String, Int)
+  countGarbage acc [] = ([], acc)
+  countGarbage acc ('!':x:xs) = countGarbage acc xs
+  countGarbage acc ('<':xs) = countGarbage (succ acc) xs
+  countGarbage acc ('>':xs) = (xs, acc)
+  countGarbage acc (x:xs) = countGarbage (succ acc) xs

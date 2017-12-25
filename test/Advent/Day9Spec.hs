@@ -30,12 +30,18 @@ module Advent.Day9Spec (spec) where
         day9a "{{<a!>},{<a!>},{<a!>},{<ab>}}"  `shouldBe` 3
       it "{{<!>},{<!>},{<!>},{<a>}} scores 2" $ do
         day9a "{{<!>},{<!>},{<!>},{<a>}}" `shouldBe` 3
-      it "day9a solution" $ do
-        dir <- getCurrentDirectory
-        csv <- readFile (dir ++ "/test/day9.csv")
-        day9a csv  `shouldBe` 0
     describe "day9b" $ do
-      it "reach exit" $ do
-        dir <- getCurrentDirectory
-        csv <- readFile (dir ++ "/test/day9.csv")
-        day9b csv  `shouldBe` 0
+      it "<> scores 0" $ do
+        day9b "<>"  `shouldBe` 0
+      it "<random characters> scores 17" $ do
+        day9b "<random characters>"  `shouldBe` 17
+      it "<<<<> scores 3" $ do
+        day9b "<<<<>"  `shouldBe` 3
+      it "<{!>}> scores 2" $ do
+        day9b "<{!>}>"  `shouldBe` 2
+      it "<!!> scores 0" $ do
+        day9b "<!!>"  `shouldBe` 0
+      it "<!!!>> scores 0" $ do
+        day9b "<!!!>>"  `shouldBe` 0
+      it "<{o\"i!a,<{i<a> scores 10" $ do
+        day9b "<{o\"i!a,<{i<a>"  `shouldBe` 10
