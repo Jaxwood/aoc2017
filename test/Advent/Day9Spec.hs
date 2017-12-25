@@ -30,6 +30,10 @@ module Advent.Day9Spec (spec) where
         day9a "{{<a!>},{<a!>},{<a!>},{<ab>}}"  `shouldBe` 3
       it "{{<!>},{<!>},{<!>},{<a>}} scores 2" $ do
         day9a "{{<!>},{<!>},{<!>},{<a>}}" `shouldBe` 3
+      it "day9a solution" $ do
+        dir <- getCurrentDirectory
+        csv <- readFile (dir ++ "/test/day9.csv")
+        day9a csv  `shouldBe` 0
     describe "day9b" $ do
       it "reach exit" $ do
         dir <- getCurrentDirectory
