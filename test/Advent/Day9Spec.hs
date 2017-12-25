@@ -28,6 +28,8 @@ module Advent.Day9Spec (spec) where
         day9a "{{<!!>},{<!!>},{<!!>},{<!!>}}"  `shouldBe` 9
       it "{{<a!>},{<a!>},{<a!>},{<ab>}} scores 3" $ do
         day9a "{{<a!>},{<a!>},{<a!>},{<ab>}}"  `shouldBe` 3
+      it "{{<!>},{<!>},{<!>},{<a>}} scores 2" $ do
+        day9a "{{<!>},{<!>},{<!>},{<a>}}" `shouldBe` 3
     describe "day9b" $ do
       it "reach exit" $ do
         dir <- getCurrentDirectory

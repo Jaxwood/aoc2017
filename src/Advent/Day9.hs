@@ -13,7 +13,13 @@ module Advent.Day9 (day9a, day9b) where
   parse acc (x:xs) = parse acc xs
 
   parseEnd :: Int -> Int -> String -> (String, Int)
+  parseEnd acc' acc ('<':xs) = parseEnd acc' acc (parseGarbage xs)
   parseEnd acc' acc ('{':xs) = parseEnd (succ acc') (acc + succ acc') xs
   parseEnd acc' acc ('}':xs) = if acc' == 1 then (xs, acc) else parseEnd (pred acc') acc xs
   parseEnd acc' acc (x:xs) = parseEnd acc' acc xs
 
+  parseGarbage :: String -> String
+  parseGarbage ('!':'!':xs) = parseGarbage xs
+  parseGarbage ('!':'>':xs) = parseGarbage xs
+  parseGarbage ('>':xs) = xs
+  parseGarbage (x:xs) = parseGarbage xs
