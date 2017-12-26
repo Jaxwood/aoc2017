@@ -12,8 +12,8 @@ module Advent.Day10Spec (spec) where
   spec :: Spec
   spec = do
     describe "day10a" $ do
-      it "{} scores 1" $ do
-        day10a "{}"  `shouldBe` 0
+      it "{} scores 12" $ do
+        day10a [0..4] [3,4,1,5]  `shouldBe` 12
     describe "day10b" $ do
       it "{} scores 1" $ do
         day10b "{}"  `shouldBe` 0
