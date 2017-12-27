@@ -1,7 +1,7 @@
 module Advent.Day10Spec (spec) where
 
   import Test.Hspec
-  import Advent.Day10 (day10a, day10b, lengthSequence, sparseHash, sparse)
+  import Advent.Day10 (day10a, day10b)
   import System.Directory
 
   main :: IO ()
@@ -16,14 +16,11 @@ module Advent.Day10Spec (spec) where
         csv <- readFile (dir ++ "/test/day10.csv")
         day10a [0..4] csv `shouldBe` 12
       describe "day10b" $ do
-        it "day10b" $ do
-          day10b ""  `shouldBe` 0
-      describe "toAscii" $ do
-        it "coverts to ascii" $ do
-          lengthSequence "1,2,3"  `shouldBe` [49,44,50,44,51,17,31,73,47,23]
-      describe "sparse hash" $ do
-        it "xor 16 numbers" $ do
-          sparseHash [65,27,9,1,4,3,40,50,91,7,6,0,2,5,68,22]  `shouldBe` 64
-      describe "sparse" $ do
-        it "xor list of numbers" $ do
-          sparse [65,27,9,1,4,3,40,50,91,7,6,0,2,5,68,22,65,27,9,1,4,3,40,50,91,7,6,0,2,5,68,22]  `shouldBe` [64,64]
+        it "dense hash with empty input" $ do
+          day10b [0..255] "" `shouldBe` "a2582a3a0e66e6e86e3812dcb672a272"
+        it "dense hash with input AoC 2017" $ do
+          day10b [0..255] "AoC 2017" `shouldBe` "33efeb34ea91902bb2f59c9920caa6cd"
+        it "dense hash with input 1,2,3" $ do
+          day10b [0..255] "1,2,3" `shouldBe` "3efbe78a8d82f29979031a4aa0b16a9d"
+        it "dense hash with input 1,2,4" $ do
+          day10b [0..255] "1,2,4" `shouldBe` "63960835bcdc130f0b66d7ff4f6a5a8e"
