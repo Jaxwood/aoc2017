@@ -1,6 +1,8 @@
-module Advent.Day10 (day10a, day10b) where
+module Advent.Day10 (day10a, day10b, lengthSequence, sparseHash) where
 
   import Data.List
+  import Data.Bits (xor)
+  import Data.Char (ord)
   import qualified Data.Text as T
 
   day10a :: [Int] -> String -> Int
@@ -34,7 +36,13 @@ module Advent.Day10 (day10a, day10b) where
   position len amnt idx skp = if a <= 0 then (idx + amnt + skp) - len else b
                               where a = len - b
                                     b = idx + amnt + skp
-                                    
+
   rotate :: Int -> [a] -> [a]
   rotate _ [] = []
   rotate n xs = zipWith const (drop n (cycle xs)) xs
+
+  lengthSequence :: String -> [Int]
+  lengthSequence s = (map ord s) ++ [17, 31, 73, 47, 23]
+
+  sparseHash :: [Int] -> Int
+  sparseHash = foldl xor 0
