@@ -1,4 +1,4 @@
-module Advent.Day10 (day10a, day10b, lengthSequence, sparseHash) where
+module Advent.Day10 (day10a, day10b, lengthSequence, sparseHash, sparse) where
 
   import Data.List
   import Data.Bits (xor)
@@ -46,3 +46,10 @@ module Advent.Day10 (day10a, day10b, lengthSequence, sparseHash) where
 
   sparseHash :: [Int] -> Int
   sparseHash = foldl xor 0
+
+  sparse :: [Int] -> [Int]
+  sparse = map sparseHash . sixteens
+
+  sixteens :: [Int] -> [[Int]]
+  sixteens [] = []
+  sixteens xs = (take 16 xs):(sixteens $ drop 16 xs)

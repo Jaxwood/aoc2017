@@ -1,7 +1,7 @@
 module Advent.Day10Spec (spec) where
 
   import Test.Hspec
-  import Advent.Day10 (day10a, day10b, lengthSequence, sparseHash)
+  import Advent.Day10 (day10a, day10b, lengthSequence, sparseHash, sparse)
   import System.Directory
 
   main :: IO ()
@@ -24,3 +24,6 @@ module Advent.Day10Spec (spec) where
       describe "sparse hash" $ do
         it "xor 16 numbers" $ do
           sparseHash [65,27,9,1,4,3,40,50,91,7,6,0,2,5,68,22]  `shouldBe` 64
+      describe "sparse" $ do
+        it "xor list of numbers" $ do
+          sparse [65,27,9,1,4,3,40,50,91,7,6,0,2,5,68,22,65,27,9,1,4,3,40,50,91,7,6,0,2,5,68,22]  `shouldBe` [64,64]
