@@ -40,9 +40,9 @@ module Advent.Day10 (day10a, day10b) where
   reverse' idx y xs = reverse $ take y $ drop idx $ cycle xs
 
   position :: Int -> Int -> Int -> Int -> Int
-  position len amnt idx skp = if a <= 0 then b - len else b
-                              where a = len - b
-                                    b = idx + amnt + skp
+  position len amnt idx skp = if b >= len then b - (len * c) else b
+                              where b = idx + amnt + skp
+                                    c = div b len
 
   rotate :: Int -> [a] -> [a]
   rotate _ [] = []
