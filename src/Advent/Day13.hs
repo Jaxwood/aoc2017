@@ -11,22 +11,26 @@ module Advent.Day13 (day13a, day13b) where
   data Layer = Layer Depth Range Tick deriving (Show, Eq)
 
   day13a :: String -> Int
-  day13a = firewall 0 6 0 . rights . map parseInput . lines
+  day13a = firewall (*) 0 6 0 . rights . map parseInput . lines
 
   day13b :: String -> Int
-  day13b s = 0
+  day13b = firewall' 0 0 6 0 . rights . map parseInput . lines
 
-  firewall :: Int -> Int -> Int -> [Layer] -> Int
-  firewall c m acc l 
-    | c == m = acc + collision c l
-    | otherwise = let acc' = acc + collision c l
-                  in firewall (succ c) m acc' (fmap tick l)
+  firewall :: (Int -> Int -> Int) -> Int -> Int -> Int -> [Layer] -> Int
+  firewall fn c m acc l 
+    | c == m = acc + collision fn c l
+    | otherwise = let acc' = acc + collision fn c l
+                  in firewall fn (succ c) m acc' (fmap tick l)
 
-  collision :: Int -> [Layer] -> Int
-  collision c ls = case find (\(Layer a _ _) -> a == c) ls of
+  firewall' :: Int -> Int -> Int -> Int -> [Layer] -> Int
+  firewall' d c m acc l = let res = firewall max c m acc $ (iterate (fmap tick) l) !! d
+                            in if res == 0 then d else firewall' (succ d) c m acc l
+
+  collision :: (Int -> Int -> Int) -> Int -> [Layer] -> Int
+  collision fn c ls = case find (\(Layer a _ _) -> a == c) ls of
                      Nothing -> 0
-                     Just (Layer a b (Up c)) -> if start c then a * b else 0
-                     Just (Layer a b (Down c)) -> if start c then a * b else 0
+                     Just (Layer a b (Up c)) -> if start c then fn a b else 0
+                     Just (Layer a b (Down c)) -> if start c then fn a b else 0
 
   tick :: Layer -> Layer
   tick (Layer a b xs) = case xs of

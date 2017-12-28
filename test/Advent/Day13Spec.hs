@@ -19,4 +19,4 @@ module Advent.Day13Spec (spec) where
       it "should find severity" $ do
         dir <- getCurrentDirectory
         csv <- readFile (dir ++ "/test/day13.csv")
-        day13b csv `shouldBe` 0
+        day13b csv `shouldBe` 10
