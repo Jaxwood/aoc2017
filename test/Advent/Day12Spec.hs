@@ -14,4 +14,4 @@ module Advent.Day12Spec (spec) where
       it "should find all nodes connected to node 0" $ do
         dir <- getCurrentDirectory
         csv <- readFile (dir ++ "/test/day12.csv")
-        day12a 6 csv `shouldBe` 5
+        day12a 6 csv `shouldBe` 6
