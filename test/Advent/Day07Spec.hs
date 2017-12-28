@@ -2,7 +2,7 @@ module Advent.Day07Spec (spec) where
 
   import Data.Tree
   import Test.Hspec
-  import Advent.Day7 (day7a, day7b)
+  import Advent.Day07 (day7a, day7b)
   import System.Directory
 
   main :: IO ()

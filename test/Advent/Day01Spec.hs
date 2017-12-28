@@ -1,4 +1,4 @@
-module Advent.Day1Spec (spec) where
+module Advent.Day01Spec (spec) where
   import Test.Hspec
   import Advent.Day01 (day1a, day1b)
   import System.Directory

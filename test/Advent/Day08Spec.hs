@@ -1,7 +1,7 @@
 module Advent.Day08Spec (spec) where
 
   import Test.Hspec
-  import Advent.Day8 (day8a, day8b)
+  import Advent.Day08 (day8a, day8b)
   import Data.Map
   import System.Directory
 

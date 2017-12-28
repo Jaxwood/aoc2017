@@ -1,5 +1,5 @@
 {-# LANGUAGE ViewPatterns #-}
-module Advent.Day5 (day5a, day5b) where
+module Advent.Day05 (day5a, day5b) where
 
   import Data.Sequence as S
 

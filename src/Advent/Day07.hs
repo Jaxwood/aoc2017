@@ -1,4 +1,4 @@
-module Advent.Day7 (day7a, day7b) where
+module Advent.Day07 (day7a, day7b) where
 
   import Data.List
   import Data.Either

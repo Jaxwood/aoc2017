@@ -1,4 +1,4 @@
-module Advent.Day9 (day9a, day9b) where
+module Advent.Day09 (day9a, day9b) where
 
   day9a :: String -> Int
   day9a = parse 0

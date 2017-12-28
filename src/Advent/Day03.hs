@@ -1,4 +1,4 @@
-module Advent.Day3 (day3a, day3b) where
+module Advent.Day03 (day3a, day3b) where
 
   import Data.List
 
