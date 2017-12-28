@@ -1,4 +1,4 @@
-module Advent.Day8Spec (spec) where
+module Advent.Day08Spec (spec) where
 
   import Test.Hspec
   import Advent.Day8 (day8a, day8b)

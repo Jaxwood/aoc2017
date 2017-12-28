@@ -1,4 +1,4 @@
-module Advent.Day7Spec (spec) where
+module Advent.Day07Spec (spec) where
 
   import Data.Tree
   import Test.Hspec
