@@ -30,14 +30,14 @@ module Advent.Day13 (day13a, day13b) where
 
   tick :: Layer -> Layer
   tick (Layer a b xs) = case xs of
-    (Up xs) -> if atEnd xs then (Layer a b $ previous xs) else (Layer a b $ next xs)
-    (Down xs) -> if atStart xs then (Layer a b $ next xs) else (Layer a b $previous xs)
+    (Up xs) -> if end xs then (Layer a b $ previous xs) else (Layer a b $ next xs)
+    (Down xs) -> if start xs then (Layer a b $ next xs) else (Layer a b $previous xs)
 
-  atEnd :: [Int] -> Bool
-  atEnd = (==1) . last
+  end :: [Int] -> Bool
+  end = (==1) . last
 
-  atStart :: [Int] -> Bool
-  atStart = (==1) . head
+  start :: [Int] -> Bool
+  start = (==1) . head
 
   next :: [Int] -> Tick
   next xs = Up (init $ 0:xs)
