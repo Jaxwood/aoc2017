@@ -1,7 +1,7 @@
 module Advent.Day13Spec (spec) where
 
   import Test.Hspec
-  import Advent.Day13 (day13a, day13b, Layer(Layer))
+  import Advent.Day13 (day13a, day13b)
   import System.Directory
 
   main :: IO ()

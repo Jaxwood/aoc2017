@@ -1,4 +1,4 @@
-module Advent.Day13 (day13a, day13b, Layer(Layer)) where
+module Advent.Day13 (day13a, day13b) where
 
   import Data.List
   import Data.Either (rights)
