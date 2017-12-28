@@ -1,17 +1,24 @@
 module Advent.Day12 (day12a, day12b) where
 
   import Data.Array
+  import Data.Graph (Graph, path)
   import Text.Parsec
   import Text.Parsec.String
   import Text.ParserCombinators.Parsec.Error
 
   data Node = Node Int [Int]
 
-  day12a :: String -> Array Int [Int]
-  day12a = listArray (0,6) . map (neighbors . parseInput) . lines
+  day12a :: Int -> String -> Int
+  day12a i s = hasPath i $ graph i $ map (neighbors . parseInput) $ lines s
 
   day12b :: String -> Int
   day12b s = 0
+
+  hasPath :: Int -> Graph -> Int
+  hasPath s g = length $ filter (path g 0) [1..s]
+
+  graph :: Int -> [[Int]] -> Graph
+  graph i is = listArray (0,i) is
 
   neighbors :: Either ParseError Node -> [Int]
   neighbors s = case s of

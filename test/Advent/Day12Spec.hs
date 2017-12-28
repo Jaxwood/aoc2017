@@ -1,6 +1,5 @@
 module Advent.Day12Spec (spec) where
 
-  import Data.Array
   import Test.Hspec
   import Advent.Day12 (day12a, day12b)
   import System.Directory
@@ -15,4 +14,4 @@ module Advent.Day12Spec (spec) where
       it "should find all nodes connected to node 0" $ do
         dir <- getCurrentDirectory
         csv <- readFile (dir ++ "/test/day12.csv")
-        day12a csv `shouldBe` (listArray (0,1) [[0],[1]])
+        day12a 6 csv `shouldBe` 5
