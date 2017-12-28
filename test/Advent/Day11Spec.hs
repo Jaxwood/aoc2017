@@ -14,8 +14,9 @@ module Advent.Day11Spec (spec) where
       it "ne,ne,ne" $ do
         day11a "ne,ne,ne" `shouldBe` 3
       it "ne,ne,sw,sw" $ do
-        day11a "ne,ne,sw,sw" `shouldBe` 0
+        day11a "ne,ne,sw,sw" `shouldBe`0
       it "ne,ne,s,s" $ do
         day11a "ne,ne,s,s" `shouldBe` 2
       it "se,sw,se,sw,sw" $ do
         day11a "se,sw,se,sw,sw" `shouldBe` 3
+
