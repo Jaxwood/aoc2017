@@ -25,8 +25,8 @@ module Advent.Day13 (day13a, day13b) where
   collision :: Int -> [Layer] -> Int
   collision c ls = case find (\(Layer a _ _) -> a == c) ls of
                      Nothing -> 0
-                     Just (Layer a b (Up c)) -> if c !! 0 == 1 then a * b else 0
-                     Just (Layer a b (Down c)) -> if c !! 0 == 1 then a * b else 0
+                     Just (Layer a b (Up c)) -> if start c then a * b else 0
+                     Just (Layer a b (Down c)) -> if start c then a * b else 0
 
   tick :: Layer -> Layer
   tick (Layer a b xs) = case xs of
