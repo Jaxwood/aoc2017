@@ -1,19 +1,23 @@
-module Advent.Day13 (day13a, day13b) where
+module Advent.Day13 (day13a, day13b, Layer(Layer)) where
 
   import Data.List
+  import Data.Either (rights)
   import Text.Parsec
   import Text.Parsec.String
 
   type Depth = Int
-  type Range = Int
-  data Layer = Layer Depth Range
+  type Range = [Int]
+  data Layer = Layer Depth Range deriving (Show, Eq)
   data Tick = Up [Int] | Down [Int] deriving (Show)
 
-  day13a :: String -> Int
-  day13a = length . map parseInput . lines
+  day13a :: String -> [Layer]
+  day13a = rights . map parseInput . lines
 
   day13b :: String -> Int
   day13b s = 0
+
+  firewall :: Layer -> [Int]
+  firewall l = []
 
   tick :: Tick -> Tick
   tick xs = case xs of
@@ -23,9 +27,7 @@ module Advent.Day13 (day13a, day13b) where
   atEnd :: [Int] -> Bool
   atEnd xs = case findIndex (==1) xs of
                Nothing -> False
-               (Just i) -> let ln = length xs
-                               ln' = ln - 1
-                           in i == ln'
+               (Just i) -> i == (pred $ length xs)
 
   atStart :: [Int] -> Bool
   atStart xs = case findIndex (==1) xs of
@@ -33,12 +35,10 @@ module Advent.Day13 (day13a, day13b) where
                (Just i) -> i == 0
 
   next :: [Int] -> Tick
-  next xs = let ln = length xs
-            in Up (take ln $ 0:xs)
+  next xs = Up (init $ 0:xs)
 
   previous :: [Int] -> Tick
-  previous xs = let ln = length xs
-                in Down (take ln $ drop 1 $ xs ++ [0])
+  previous xs = Down (tail $ xs ++ [0])
 
   parseInput :: String -> Either ParseError Layer
   parseInput = parse parseLayer ""
@@ -49,4 +49,4 @@ module Advent.Day13 (day13a, day13b) where
     _ <- string ":"
     _ <- space
     range <- many1 digit
-    return $ Layer (read depth) (read range)
+    return $ Layer (read depth) (init $ 1:(replicate (read range) 0))
