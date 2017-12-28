@@ -34,14 +34,10 @@ module Advent.Day13 (day13a, day13b) where
     (Down xs) -> if atStart xs then (Layer a b $ next xs) else (Layer a b $previous xs)
 
   atEnd :: [Int] -> Bool
-  atEnd xs = case findIndex (==1) xs of
-               Nothing -> False
-               (Just i) -> i == (pred $ length xs)
+  atEnd = (==1) . last
 
   atStart :: [Int] -> Bool
-  atStart xs = case findIndex (==1) xs of
-               Nothing -> False
-               (Just i) -> i == 0
+  atStart = (==1) . head
 
   next :: [Int] -> Tick
   next xs = Up (init $ 0:xs)
