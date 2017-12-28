@@ -1,7 +1,7 @@
 module Advent.Day12 (day12a, day12b) where
 
   import Data.Array
-  import Data.Graph (Graph, reachable)
+  import Data.Graph (Graph, reachable, components)
   import Text.Parsec
   import Text.Parsec.String
   import Text.ParserCombinators.Parsec.Error
@@ -11,8 +11,8 @@ module Advent.Day12 (day12a, day12b) where
   day12a :: Int -> String -> Int
   day12a i s = hasPath $ graph i $ map (neighbors . parseInput) $ lines s
 
-  day12b :: String -> Int
-  day12b s = 0
+  day12b :: Int -> String -> Int
+  day12b i s = length $ components $ graph i $ map (neighbors . parseInput) $ lines s
 
   hasPath :: Graph -> Int
   hasPath g = length $ reachable g 0

@@ -15,3 +15,8 @@ module Advent.Day12Spec (spec) where
         dir <- getCurrentDirectory
         csv <- readFile (dir ++ "/test/day12.csv")
         day12a 6 csv `shouldBe` 6
+    describe "day12b" $ do
+      it "should find all programs" $ do
+        dir <- getCurrentDirectory
+        csv <- readFile (dir ++ "/test/day12.csv")
+        day12b 6 csv `shouldBe` 2
