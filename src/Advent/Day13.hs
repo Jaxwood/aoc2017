@@ -6,23 +6,32 @@ module Advent.Day13 (day13a, day13b, Layer(Layer)) where
   import Text.Parsec.String
 
   type Depth = Int
-  type Range = [Int]
-  data Layer = Layer Depth Range deriving (Show, Eq)
-  data Tick = Up [Int] | Down [Int] deriving (Show)
+  type Range = Int
+  data Tick = Up [Int] | Down [Int] deriving (Show, Eq)
+  data Layer = Layer Depth Range Tick deriving (Show, Eq)
 
-  day13a :: String -> [Layer]
-  day13a = rights . map parseInput . lines
+  day13a :: String -> Int
+  day13a = firewall 0 6 0 . rights . map parseInput . lines
 
   day13b :: String -> Int
   day13b s = 0
 
-  firewall :: Layer -> [Int]
-  firewall l = []
+  firewall :: Int -> Int -> Int -> [Layer] -> Int
+  firewall c m acc l 
+    | c == m = acc + collision c l
+    | otherwise = let acc' = acc + collision c l
+                  in firewall (succ c) m acc' (fmap tick l)
 
-  tick :: Tick -> Tick
-  tick xs = case xs of
-    (Up xs) -> if atEnd xs then previous xs else next xs
-    (Down xs) -> if atStart xs then next xs else previous xs
+  collision :: Int -> [Layer] -> Int
+  collision c ls = case find (\(Layer a _ _) -> a == c) ls of
+                     Nothing -> 0
+                     Just (Layer a b (Up c)) -> if c !! 0 == 1 then a * b else 0
+                     Just (Layer a b (Down c)) -> if c !! 0 == 1 then a * b else 0
+
+  tick :: Layer -> Layer
+  tick (Layer a b xs) = case xs of
+    (Up xs) -> if atEnd xs then (Layer a b $ previous xs) else (Layer a b $ next xs)
+    (Down xs) -> if atStart xs then (Layer a b $ next xs) else (Layer a b $previous xs)
 
   atEnd :: [Int] -> Bool
   atEnd xs = case findIndex (==1) xs of
@@ -49,4 +58,4 @@ module Advent.Day13 (day13a, day13b, Layer(Layer)) where
     _ <- string ":"
     _ <- space
     range <- many1 digit
-    return $ Layer (read depth) (init $ 1:(replicate (read range) 0))
+    return $ Layer (read depth) (read range) (Up $ init $ 1:(replicate (read range) 0))
