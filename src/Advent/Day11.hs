@@ -9,16 +9,19 @@ module Advent.Day11 (day11a, day11b) where
   data Cube = Cube X Y Z deriving (Show,Eq)
 
   day11a :: String -> Int
-  day11a = distance . foldl move empty . map (direction . T.unpack) . T.split (==',') . T.pack
+  day11a = distance . foldl move (empty, empty) . map (direction . T.unpack) . T.split (==',') . T.pack
 
   day11b :: String -> Int
-  day11b xs = 0
+  day11b = highest . foldl move (empty, empty) . map (direction . T.unpack) . T.split (==',') . T.pack
 
   empty :: Cube
   empty = Cube 0 0 0
 
-  distance :: Cube -> Int
-  distance (Cube x y z) = foldl1 max $ map abs [x, y, z]
+  distance :: (Cube, Cube) -> Int
+  distance (Cube x y z, _) = foldl1 max $ map abs [x, y, z]
+
+  highest :: (Cube, Cube) -> Int
+  highest (_, Cube x y z) = foldl1 max $ map abs [x, y, z]
 
   direction :: String -> Cardinal
   direction d
@@ -29,10 +32,15 @@ module Advent.Day11 (day11a, day11b) where
     | d == "sw" = SW
     | d == "nw" = NW
 
-  move :: Cube -> Cardinal -> Cube
-  move (Cube x y z) N = (Cube x (succ y) (pred z))
-  move (Cube x y z) S = (Cube x (pred y) (succ z))
-  move (Cube x y z) NW = (Cube (pred x) (succ y) z)
-  move (Cube x y z) NE = (Cube (succ x) y (pred z))
-  move (Cube x y z) SW = (Cube (pred x) y (succ z))
-  move (Cube x y z) SE = (Cube (succ x) (pred y) z)
+  maxCube :: (Cube, Cube) -> Cube
+  maxCube (c,c') = let m = distance (c,c')
+                       m' = distance (c',c)
+                   in if m > m' then c else c'
+
+  move :: (Cube, Cube) -> Cardinal -> (Cube, Cube)
+  move c@(Cube x y z, _) N = ((Cube x (succ y) (pred z)), maxCube c)
+  move c@(Cube x y z, _) S = ((Cube x (pred y) (succ z)), maxCube c)
+  move c@(Cube x y z, _) NW = ((Cube (pred x) (succ y) z), maxCube c)
+  move c@(Cube x y z, _) NE = ((Cube (succ x) y (pred z)), maxCube c)
+  move c@(Cube x y z, _) SW = ((Cube (pred x) y (succ z)), maxCube c)
+  move c@(Cube x y z, _) SE = ((Cube (succ x) (pred y) z), maxCube c)
