@@ -12,3 +12,6 @@ module Advent.Day14Spec (spec) where
     describe "day14a" $ do
       it "calculates used spaces" $ do
         day14a "flqrgnkx" `shouldBe` 8108
+    describe "day14b" $ do
+      it "calculates regions" $ do
+        day14b "flqrgnkx" `shouldBe` 1242
