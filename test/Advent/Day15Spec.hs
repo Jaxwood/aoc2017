@@ -12,3 +12,6 @@ module Advent.Day15Spec (spec) where
     describe "day15a" $ do
       it "get pairs" $ do
         day15a 65 8921 `shouldBe` 588
+    describe "day15b" $ do
+      it "get pairs" $ do
+        day15b 65 8921 `shouldBe` 309
