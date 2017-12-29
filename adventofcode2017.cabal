@@ -4,9 +4,9 @@ synopsis:            Solutions for adventofcode 2017
 homepage:            https://github.com/jaxwood/adventofcode2017#readme 
 license:             BSD3
 license-file:        LICENSE
-author:              Author name here
-maintainer:          example@example.com
-copyright:           2017 Author name here
+author:              Jacob Lorenzen
+maintainer:          lorenzen.jacob@gmail.com
+copyright:           2017 Jacob Lorenzen
 category:            Web
 build-type:          Simple
 extra-source-files:  README.md
@@ -15,11 +15,11 @@ cabal-version:       >=1.10
 -- To avoid duplicated efforts in documentation and dealing with the
 -- complications of embedding Haddock markup inside cabal files, it is
 -- common to point users to the README.md file.
-description:         Please see the README on Github at <https://github.com/githubuser/adventofcode2017#readme>
+description:         Please see the README on Github at <https://github.com/jaxwood/adventofcode2017#readme>
 
 library
   hs-source-dirs:      src
-  exposed-modules:     
+  exposed-modules:
                        Advent.Day01
                      , Advent.Day02
                      , Advent.Day03
@@ -34,6 +34,7 @@ library
                      , Advent.Day12
                      , Advent.Day13
                      , Advent.Day14
+                     , Advent.Day15
   build-depends:       base >= 4.7 && < 5
                      , text
                      , containers
@@ -60,4 +61,4 @@ test-suite adventofcode2017-test
 
 source-repository head
   type:     git
-  location: https://github.com/githubuser/adventofcode2017
+  location: https://github.com/jaxwood/adventofcode2017
