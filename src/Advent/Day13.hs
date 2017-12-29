@@ -7,7 +7,7 @@ module Advent.Day13 (day13a, day13b) where
 
   type Depth = Int
   type Range = Int
-  data Tick = Up [Int] | Down [Int] deriving (Show, Eq)
+  data Tick = Up Int | Down Int deriving (Show, Eq)
   data Layer = Layer Depth Range Tick deriving (Show, Eq)
 
   day13a :: String -> Int
@@ -23,8 +23,9 @@ module Advent.Day13 (day13a, day13b) where
                   in firewall fn (succ c) m acc' (fmap tick l)
 
   firewall' :: Int -> Int -> Int -> Int -> [Layer] -> Int
-  firewall' d c m acc l = let res = firewall max c m acc $ (iterate (fmap tick) l) !! d
-                            in if res == 0 then d else firewall' (succ d) c m acc l
+  firewall' d c m acc l = let tick' = fmap tick l
+                              res = firewall (\x y -> 1) c m acc l
+                          in if res == 0 then d else firewall' (succ d) c m acc tick'
 
   collision :: (Int -> Int -> Int) -> Int -> [Layer] -> Int
   collision fn c ls = case find (\(Layer a _ _) -> a == c) ls of
@@ -34,20 +35,20 @@ module Advent.Day13 (day13a, day13b) where
 
   tick :: Layer -> Layer
   tick (Layer a b xs) = case xs of
-    (Up xs) -> if end xs then (Layer a b $ previous xs) else (Layer a b $ next xs)
+    (Up xs) -> if end b xs then (Layer a b $ previous xs) else (Layer a b $ next xs)
     (Down xs) -> if start xs then (Layer a b $ next xs) else (Layer a b $previous xs)
 
-  end :: [Int] -> Bool
-  end = (==1) . last
+  end :: Int -> Int -> Bool
+  end a b =  a == b
 
-  start :: [Int] -> Bool
-  start = (==1) . head
+  start :: Int -> Bool
+  start = (==1)
 
-  next :: [Int] -> Tick
-  next xs = Up (init $ 0:xs)
+  next :: Int -> Tick
+  next xs = Up (succ xs)
 
-  previous :: [Int] -> Tick
-  previous xs = Down (tail $ xs ++ [0])
+  previous :: Int -> Tick
+  previous xs = Down (pred xs)
 
   parseInput :: String -> Either ParseError Layer
   parseInput = parse parseLayer ""
@@ -58,4 +59,4 @@ module Advent.Day13 (day13a, day13b) where
     _ <- string ":"
     _ <- space
     range <- many1 digit
-    return $ Layer (read depth) (read range) (Up $ init $ 1:(replicate (read range) 0))
+    return $ Layer (read depth) (read range) (Up 1)

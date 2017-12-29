@@ -16,7 +16,7 @@ module Advent.Day13Spec (spec) where
         csv <- readFile (dir ++ "/test/day13.csv")
         day13a csv `shouldBe` 24
     describe "day13b" $ do
-      it "should find severity" $ do
+      it "should find path through layers" $ do
         dir <- getCurrentDirectory
         csv <- readFile (dir ++ "/test/day13.csv")
         day13b csv `shouldBe` 10
