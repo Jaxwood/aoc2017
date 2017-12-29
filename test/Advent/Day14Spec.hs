@@ -11,7 +11,9 @@ module Advent.Day14Spec (spec) where
   spec = do
     describe "day14a" $ do
       it "calculates used spaces" $ do
+        pendingWith "to get fast feedback test is temporary disabled"
         day14a "flqrgnkx" `shouldBe` 8108
     describe "day14b" $ do
       it "calculates regions" $ do
+        pendingWith "to get fast feedback test is temporary disabled"
         day14b "flqrgnkx" `shouldBe` 1242
