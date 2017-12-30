@@ -1,4 +1,4 @@
-module Advent.Day16 (day16a, day16b, Instruction(Spin, Exchange, Partner)) where
+module Advent.Day16 (day16a, day16b) where
 
   import Data.List
   import qualified Data.Text as T
@@ -10,7 +10,7 @@ module Advent.Day16 (day16a, day16b, Instruction(Spin, Exchange, Partner)) where
 
   day16b :: String -> String -> Int -> String
   day16b i s t = let fn = day16a i
-               in iterate fn s !! t
+                 in iterate fn s !! t
 
   follow :: String -> Instruction -> String
   follow acc (Spin x) = let ln = length acc
