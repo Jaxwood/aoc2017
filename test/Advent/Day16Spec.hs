@@ -14,7 +14,9 @@ module Advent.Day16Spec (spec) where
       it "should find order after dance" $ do
         dir <- getCurrentDirectory
         csv <- readFile (dir ++ "/test/day16.csv")
-        day16a "abcde" csv `shouldBe` "baedc"
+        day16a csv ['a'..'e'] `shouldBe` "baedc"
     describe "day16b" $ do
-      it "-" $ do
-        day16b "" `shouldBe` ""
+      it "should find order 1 billion dances" $ do
+        dir <- getCurrentDirectory
+        csv <- readFile (dir ++ "/test/day16.csv")
+        day16b csv ['a'..'e'] 2 `shouldBe` "ceadb"

@@ -6,10 +6,11 @@ module Advent.Day16 (day16a, day16b, Instruction(Spin, Exchange, Partner)) where
   data Instruction = Spin Int | Exchange Int Int | Partner Char Char deriving (Show,Eq)
 
   day16a :: String -> String -> String
-  day16a s i = foldl follow s $ map (instruction . T.unpack) $ concatMap (T.split (==',') . T.pack) $ lines i
+  day16a i s = foldl follow s $ map (instruction . T.unpack) $ concatMap (T.split (==',') . T.pack) $ lines i
 
-  day16b :: String -> String
-  day16b s = ""
+  day16b :: String -> String -> Int -> String
+  day16b i s t = let fn = day16a i
+               in iterate fn s !! t
 
   follow :: String -> Instruction -> String
   follow acc (Spin x) = let ln = length acc
