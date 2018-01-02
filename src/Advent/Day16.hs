@@ -1,38 +1,56 @@
 module Advent.Day16 (day16a, day16b) where
 
-  import Data.List
-  import qualified Data.Text as T
+    import Data.List (sortBy)
+    import Data.Foldable (toList)
+    import qualified Data.Sequence as M
+    import qualified Data.Text as T
+    import qualified Data.Map.Strict as Map
+  
+    type Program = M.Seq Char
+    type Memory = Map.Map String Program
+    data Instruction = Spin Int | Exchange Int Int | Partner Char Char deriving (Show,Eq)
+  
+    day16a :: String -> String -> String
+    day16a i s = unpack $ dance (instructions i) (pack s)
+  
+    day16b :: String -> String -> Int -> String
+    day16b i s t = unpack $ iterate' Map.empty (instructions i) t (pack s)
+  
+    iterate' :: Memory -> [Instruction] -> Int -> Program -> Program
+    iterate' m i 0 p = p
+    iterate' m i t p = if Map.member (unpack p) m then iterate' m i (pred t) $ (Map.!) m (unpack p) else let a = dance i p
+                                                                                                             m' = Map.insert (unpack p) a m
+                                                                                                         in iterate' m' i (pred t) a
+  
+    dance :: [Instruction] -> Program -> Program
+    dance is p = foldr follow p is
+  
+    pack :: String -> Program
+    pack = M.fromList
+  
+    unpack :: Program -> String
+    unpack = toList
+  
+    follow :: Instruction -> Program -> Program
+    follow (Spin x) acc = let ln = M.length acc 
+                              a = M.take (abs $ ln-x) acc
+                              b = M.drop (abs $ ln-x) acc
+                          in b M.>< a
+    follow (Exchange a b) acc = let (Just a') = M.lookup a acc
+                                    (Just b') = M.lookup b acc
+                                in M.update b a' (M.update a b' acc)
+    follow (Partner a b) acc = let (Just a') = M.elemIndexL a acc
+                                   (Just b') = M.elemIndexL b acc
+                               in M.update a' b (M.update b' a acc)
+  
+    instructions :: String -> [Instruction]
+    instructions s = reverse $ map (instruction . T.unpack) $ concatMap (T.split (==',') . T.pack) $ lines s
+  
+    instruction :: String -> Instruction
+    instruction ('s':xs) = Spin (read xs)
+    instruction ('x':xs) = let x = map (read . T.unpack) $ T.split (=='/') $ T.pack xs
+                           in Exchange (head x) (last x)
+    instruction ('p':xs) = let x = map T.unpack $ T.split (=='/') $ T.pack xs
+                           in Partner (head $ head x) (head $ last x)                                                                                                                                                                                               
 
-  data Instruction = Spin Int | Exchange Int Int | Partner Char Char deriving (Show,Eq)
-
-  day16a :: String -> String -> String
-  day16a i s = foldl follow s $ map (instruction . T.unpack) $ concatMap (T.split (==',') . T.pack) $ lines i
-
-  day16b :: String -> String -> Int -> String
-  day16b i s t = let fn = day16a i
-                 in iterate fn s !! t
-
-  follow :: String -> Instruction -> String
-  follow acc (Spin x) = let ln = length acc
-                        in take ln $ drop (abs $ ln - x) $ cycle acc
-
-  follow acc (Exchange a b) = swap (Just a) (Just b) acc
-
-  follow acc (Partner a b) = let a' = findIndex (==a) acc
-                                 b' = findIndex (==b) acc
-                             in swap a' b' acc
-
-  swap :: Maybe Int -> Maybe Int -> String -> String
-  swap (Just a) (Just b) acc = let a' = acc !! a
-                                   b' = acc !! b
-                                   acc' = take a acc ++ (b':(drop (succ a) acc))
-                               in take b acc' ++ (a':(drop (succ b) acc'))
-  swap _ _ acc = acc
-
-  instruction :: String -> Instruction
-  instruction ('s':xs) = Spin (read xs)
-  instruction ('x':xs) = let x = map (read . T.unpack) $ T.split (=='/') $ T.pack xs
-                         in Exchange (head x) (last x)
-  instruction ('p':xs) = let x = map T.unpack $ T.split (=='/') $ T.pack xs
-                         in Partner (head $ head x) (head $ last x)
-
+                           

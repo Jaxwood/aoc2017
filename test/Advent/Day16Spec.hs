@@ -1,6 +1,8 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Advent.Day16Spec (spec) where
 
   import Test.Hspec
+  import Data.Text as T
   import Advent.Day16 (day16a, day16b)
   import System.Directory
 
