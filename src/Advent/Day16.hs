@@ -18,9 +18,11 @@ module Advent.Day16 (day16a, day16b) where
   
     iterate' :: Memory -> [Instruction] -> Int -> Program -> Program
     iterate' m i 0 p = p
-    iterate' m i t p = if Map.member (unpack p) m then iterate' m i (pred t) $ (Map.!) m (unpack p) else let a = dance i p
-                                                                                                             m' = Map.insert (unpack p) a m
-                                                                                                         in iterate' m' i (pred t) a
+    iterate' m i t p = if Map.member (unpack p) m
+                       then iterate' m i (pred t) $ (Map.!) m (unpack p)
+                       else let a = dance i p
+                                m' = Map.insert (unpack p) a m
+                            in iterate' m' i (pred t) a
   
     dance :: [Instruction] -> Program -> Program
     dance is p = foldr follow p is
