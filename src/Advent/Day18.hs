@@ -57,63 +57,27 @@ module Advent.Day18 (day18a, day18b) where
     Nothing -> error "not found"
 
   parseInput :: String -> Either ParseError Instruction
-  parseInput = parse (choice [try parseSet, try parseAdd, try parseMul, try parseMod, try parseJgz, try parseSnd, parseRcv]) ""
+  parseInput = parse (choice [try parseInstruction, parseInstruction']) ""
 
-  parseSet :: Parser Instruction
-  parseSet = do
-    _ <- string "set"
+  parseInstruction :: Parser Instruction
+  parseInstruction = do
+    instruction <- choice [try $ string "mul", try $ string "mod", try $ string "jgz", try $ string "add", string "set"]
     _ <- space
     id <- letter
     _ <- space
     val <- many1 $ choice [try $ char '-', try digit, letter]
-    return $ Set id (if any isDigit val then Number $ read val else Register $ head val)
+    return $ case instruction of
+               "mul" -> Mul id (if any isDigit val then Number $ read val else Register $ head val)
+               "add" -> Add id (if any isDigit val then Number $ read val else Register $ head val)
+               "set" -> Set id (if any isDigit val then Number $ read val else Register $ head val)
+               "mod" -> Mod id (if any isDigit val then Number $ read val else Register $ head val)
+               "jgz" -> Jgz id (if any isDigit val then Number $ read val else Register $ head val)
 
-  parseAdd :: Parser Instruction
-  parseAdd = do
-    _ <- string "add"
+  parseInstruction' :: Parser Instruction
+  parseInstruction' = do
+    instruction <- choice [try $ string "snd", string "rcv"]
     _ <- space
     id <- letter
-    _ <- space
-    val <- many1 $ choice [try $ char '-', try digit, letter]
-    return $ Add id (if any isDigit val then Number $ read val else Register $ head val)
-
-  parseMul :: Parser Instruction
-  parseMul = do
-    _ <- string "mul"
-    _ <- space
-    id <- letter
-    _ <- space
-    val <- many1 $ choice [try $ char '-', try digit, letter]
-    return $ Mul id (if any isDigit val then Number $ read val else Register $ head val)
-
-  parseMod :: Parser Instruction
-  parseMod = do
-    _ <- string "mod"
-    _ <- space
-    id <- letter
-    _ <- space
-    val <- many1 $ choice [try $ char '-', try digit, letter]
-    return $ Mod id (if any isDigit val then Number $ read val else Register $ head val)
-
-  parseJgz :: Parser Instruction
-  parseJgz = do
-    _ <- string "jgz"
-    _ <- space
-    id <- letter
-    _ <- space
-    val <- many1 $ choice [try $ char '-', try digit, letter]
-    return $ Jgz id (if any isDigit val then Number $ read val else Register $ head val)
-
-  parseSnd :: Parser Instruction
-  parseSnd = do
-    _ <- string "snd"
-    _ <- space
-    id <- letter
-    return $ Snd id
-
-  parseRcv :: Parser Instruction
-  parseRcv = do
-    _ <- string "rcv"
-    _ <- space
-    id <- letter
-    return $ Rcv id
+    return $ case instruction of
+      "snd" -> Snd id
+      "rcv" -> Rcv id
