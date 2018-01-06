@@ -9,7 +9,7 @@ module Advent.Day18 (day18a, day18b) where
 
   type Queue = [Int]
   type Times = Int
-  data Program a b = Program [a] b Queue Times
+  data Program a b = Program [a] b (Maybe Queue) Times
   data Value = Number Int | Register Char deriving (Show,Eq) 
   data Instruction = Set Char Value | Add Char Value | Mul Char Value | Mod Char Value | Snd Char | Rcv Char | Jgz Char Value deriving (Show,Eq)
 
@@ -18,14 +18,18 @@ module Advent.Day18 (day18a, day18b) where
 
   day18a :: String -> Int
   day18a s = let is = rights $ map parseInput $ lines s
-                 (Program _ m _ _) = runInstruction (Program is M.empty [] 0) is
+                 (Program _ m _ _) = runInstruction (Program is M.empty Nothing 0) is
              in lookup' m '_'
 
   day18b :: String -> Int
   day18b s = let is = rights $ map parseInput $ lines s
-                 p = Program is (M.singleton 'p' 0) [] 0
-                 p' = Program is (M.singleton 'p' 1) [] 0
-             in 0
+                 p = Program is (M.singleton 'p' 0) Nothing 0
+                 p' = Program is (M.singleton 'p' 1) Nothing 0
+             in runProgram p p' is
+
+  runProgram :: Program Instruction (M.Map Char Int) -> Program Instruction (M.Map Char Int) -> [Instruction] -> Int
+  runProgram (Program _ _ (Just []) _) (Program _ _ (Just []) t) _ = 1
+  runProgram p p' is = 0
 
   runInstruction :: Program Instruction (M.Map Char Int) -> [Instruction] -> Program Instruction (M.Map Char Int)
   runInstruction p [] = p
@@ -59,13 +63,15 @@ module Advent.Day18 (day18a, day18b) where
     (Just idx) -> idx
     Nothing -> error "not found"
 
-  enqueue :: Queue -> Int -> Queue
-  enqueue is i = (i:is)
+  enqueue :: Maybe Queue -> Int -> Maybe Queue
+  enqueue Nothing i = Just [i]
+  enqueue (Just is) i = Just (i:is)
 
-  dequeue :: Queue -> Maybe (Int, Queue)
-  dequeue is = case null is of
+  dequeue :: Maybe Queue -> Maybe (Int, Maybe Queue)
+  dequeue Nothing = Nothing
+  dequeue (Just is) = case null is of
     True -> Nothing
-    False -> Just (last is, init is)
+    False -> Just (last is, Just $ init is)
 
   parseInput :: String -> Either ParseError Instruction
   parseInput = parse (choice [try parseInstruction, parseInstruction']) ""
