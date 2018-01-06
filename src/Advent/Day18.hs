@@ -2,12 +2,14 @@ module Advent.Day18 (day18a, day18b) where
 
   import qualified Data.Map.Strict as M
   import Data.Char
-  import Data.List
+  import Data.List as L
   import Data.Either (rights)
   import Text.Parsec
   import Text.Parsec.String
 
-  data Value = Number Int | Register Char deriving (Show,Eq)
+  type Queue = [Int]
+  data Program = Program [Instruction] (M.Map Char Int) Queue
+  data Value = Number Int | Register Char deriving (Show,Eq) 
   data Instruction = Set Char Value | Add Char Value | Mul Char Value | Mod Char Value | Snd Char | Rcv Char | Jgz Char Value deriving (Show,Eq)
 
   day18a :: String -> Int
@@ -48,6 +50,14 @@ module Advent.Day18 (day18a, day18b) where
   findIndex' i is = case findIndex (==i) is of
     (Just idx) -> idx
     Nothing -> error "not found"
+
+  enqueue :: Queue -> Int -> Queue
+  enqueue is i = (i:is)
+
+  dequeue :: Queue -> Maybe (Int, Queue)
+  dequeue is = case null is of
+    True -> Nothing
+    False -> Just (last is, init is)
 
   parseInput :: String -> Either ParseError Instruction
   parseInput = parse (choice [try parseInstruction, parseInstruction']) ""
