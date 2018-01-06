@@ -35,12 +35,12 @@ module Advent.Day18 (day18a, day18b) where
   runInstruction p ((Mod c i):is) = runInstruction (fmap (\m -> update' m mod c (lookup'' m i)) p) is
   runInstruction p ((Snd c):is) = runInstruction (fmap (\m -> M.insert '_' (lookup' m c) m) p) is
   runInstruction p@(Program _ m _ _) ((Rcv c):is) = if lookup' m c == 0 then runInstruction p is else p
-  runInstruction p@(Program _ m _ _) (s'@(Jgz c i):is) = if lookup' m c > 0 then runJgz p (lookup'' m i) s' is else runInstruction p is
+  runInstruction p@(Program _ m _ _) (s@(Jgz c i):is) = if lookup' m c > 0 then runInstruction p (runJgz p (lookup'' m i) s) else runInstruction p is
 
-  runJgz :: Program Instruction (M.Map Char Int) -> Int -> Instruction -> [Instruction] -> Program Instruction (M.Map Char Int)
-  runJgz p@(Program s m _ _) v i is = let idx = findIndex' i s
-                                          s' = drop (idx + v) s
-                                      in runInstruction p s'
+  runJgz :: Program Instruction (M.Map Char Int) -> Int -> Instruction -> [Instruction]
+  runJgz p@(Program s _ _ _) v i = let idx = findIndex' i s
+                                       s' = drop (idx + v) s
+                                   in s'
 
   update' :: M.Map Char Int -> (Int -> Int -> Int) -> Char -> Int -> M.Map Char Int
   update' m fn c i = M.insert c (fn (lookup' m c) i) m
