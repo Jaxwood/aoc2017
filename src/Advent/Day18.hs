@@ -26,12 +26,12 @@ module Advent.Day18 (day18a, day18b) where
 
   runInstruction :: M.Map Char Int -> [Instruction] -> [Instruction] -> Int
   runInstruction m s [] = 0
-  runInstruction m s (s'@(Set c i):is) = runInstruction (M.insert c (lookup'' m i) m) s is
-  runInstruction m s (s'@(Add c i):is) = runInstruction (update' m (+) c (lookup'' m i)) s is
-  runInstruction m s (s'@(Mul c i):is) = runInstruction (update' m (*) c (lookup'' m i)) s is
-  runInstruction m s (s'@(Mod c i):is) = runInstruction (update' m mod c (lookup'' m i)) s is
-  runInstruction m s (s'@(Snd c):is) = runInstruction (M.insert '_' (lookup' m c) m) s is
-  runInstruction m s (s'@(Rcv c):is) = if lookup' m c == 0 then runInstruction m s is else lookup' m '_'
+  runInstruction m s ((Set c i):is) = runInstruction (M.insert c (lookup'' m i) m) s is
+  runInstruction m s ((Add c i):is) = runInstruction (update' m (+) c (lookup'' m i)) s is
+  runInstruction m s ((Mul c i):is) = runInstruction (update' m (*) c (lookup'' m i)) s is
+  runInstruction m s ((Mod c i):is) = runInstruction (update' m mod c (lookup'' m i)) s is
+  runInstruction m s ((Snd c):is) = runInstruction (M.insert '_' (lookup' m c) m) s is
+  runInstruction m s ((Rcv c):is) = if lookup' m c == 0 then runInstruction m s is else lookup' m '_'
   runInstruction m s (s'@(Jgz c i):is) = if lookup' m c > 0 then runJgz m s (lookup'' m i) s' is else runInstruction m s is
 
   runJgz :: M.Map Char Int -> [Instruction] -> Int -> Instruction -> [Instruction] -> Int
@@ -49,14 +49,12 @@ module Advent.Day18 (day18a, day18b) where
 
   lookup'' :: M.Map Char Int -> Value -> Int
   lookup'' m (Number i) = i
-  lookup'' m (Register c) = case M.lookup c m of
-                          (Just i) -> i
-                          Nothing -> 0
+  lookup'' m (Register c) = lookup' m c
 
   findIndex' :: Instruction -> [Instruction] -> Int
   findIndex' i is = case findIndex (==i) is of
-    Nothing -> error "not found"
     (Just idx) -> idx
+    Nothing -> error "not found"
 
   parseInput :: String -> Either ParseError Instruction
   parseInput = parse (choice [try parseSet, try parseAdd, try parseMul, try parseMod, try parseJgz, try parseSnd, parseRcv]) ""
