@@ -8,14 +8,7 @@ module Advent.Day18 (day18a, day18b) where
   import Text.Parsec.String
 
   data Value = Number Int | Register Char deriving (Show,Eq)
-  data Instruction =
-      Set Char Value
-    | Add Char Value
-    | Mul Char Value
-    | Mod Char Value
-    | Snd Char
-    | Rcv Char
-    | Jgz Char Value deriving (Show,Eq)
+  data Instruction = Set Char Value | Add Char Value | Mul Char Value | Mod Char Value | Snd Char | Rcv Char | Jgz Char Value deriving (Show,Eq)
 
   day18a :: String -> Int
   day18a s = let is = rights $ map parseInput $ lines s
