@@ -17,8 +17,9 @@ module Advent.Day18 (day18a, day18b) where
              in runInstruction (Program is M.empty []) is
 
   day18b :: String -> Int
-  day18b s = let p = Program [] (M.singleton 'p' 0) []
-                 p' = Program [] (M.singleton 'p' 1) []
+  day18b s = let is = rights $ map parseInput $ lines s
+                 p = Program is (M.singleton 'p' 0) []
+                 p' = Program is (M.singleton 'p' 1) []
              in 0
 
 
