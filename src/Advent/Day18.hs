@@ -14,25 +14,28 @@ module Advent.Day18 (day18a, day18b) where
 
   day18a :: String -> Int
   day18a s = let is = rights $ map parseInput $ lines s
-             in runInstruction M.empty is is
+             in runInstruction (Program is M.empty []) is
 
   day18b :: String -> Int
-  day18b s = 0
+  day18b s = let p = Program [] (M.singleton 'p' 0) []
+                 p' = Program [] (M.singleton 'p' 1) []
+             in 0
 
-  runInstruction :: M.Map Char Int -> [Instruction] -> [Instruction] -> Int
-  runInstruction m s [] = 0
-  runInstruction m s ((Set c i):is) = runInstruction (M.insert c (lookup'' m i) m) s is
-  runInstruction m s ((Add c i):is) = runInstruction (update' m (+) c (lookup'' m i)) s is
-  runInstruction m s ((Mul c i):is) = runInstruction (update' m (*) c (lookup'' m i)) s is
-  runInstruction m s ((Mod c i):is) = runInstruction (update' m mod c (lookup'' m i)) s is
-  runInstruction m s ((Snd c):is) = runInstruction (M.insert '_' (lookup' m c) m) s is
-  runInstruction m s ((Rcv c):is) = if lookup' m c == 0 then runInstruction m s is else lookup' m '_'
-  runInstruction m s (s'@(Jgz c i):is) = if lookup' m c > 0 then runJgz m s (lookup'' m i) s' is else runInstruction m s is
 
-  runJgz :: M.Map Char Int -> [Instruction] -> Int -> Instruction -> [Instruction] -> Int
-  runJgz m s v i is = let idx = findIndex' i s
-                          s' = drop (idx + v) s
-                      in runInstruction m s s'
+  runInstruction :: Program -> [Instruction] -> Int
+  runInstruction p [] = 0
+  runInstruction p@(Program s m q) ((Set c i):is) = runInstruction (Program s (M.insert c (lookup'' m i) m) q) is
+  runInstruction p@(Program s m q) ((Add c i):is) = runInstruction (Program s (update' m (+) c (lookup'' m i)) q) is
+  runInstruction p@(Program s m q) ((Mul c i):is) = runInstruction (Program s (update' m (*) c (lookup'' m i)) q) is
+  runInstruction p@(Program s m q) ((Mod c i):is) = runInstruction (Program s (update' m mod c (lookup'' m i)) q) is
+  runInstruction p@(Program s m q) ((Snd c):is) = runInstruction (Program s (M.insert '_' (lookup' m c) m) q) is
+  runInstruction p@(Program s m q) ((Rcv c):is) = if lookup' m c == 0 then runInstruction p is else lookup' m '_'
+  runInstruction p@(Program s m q) (s'@(Jgz c i):is) = if lookup' m c > 0 then runJgz p (lookup'' m i) s' is else runInstruction p is
+
+  runJgz :: Program -> Int -> Instruction -> [Instruction] -> Int
+  runJgz p@(Program s m _) v i is = let idx = findIndex' i s
+                                        s' = drop (idx + v) s
+                                    in runInstruction p s'
 
   update' :: M.Map Char Int -> (Int -> Int -> Int) -> Char -> Int -> M.Map Char Int
   update' m fn c i = M.insert c (fn (lookup' m c) i) m
