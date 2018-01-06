@@ -14,7 +14,7 @@ module Advent.Day18 (day18a, day18b) where
   data Instruction = Set Char Value | Add Char Value | Mul Char Value | Mod Char Value | Snd Char | Rcv Char | Jgz Char Value deriving (Show,Eq)
 
   instance Functor (Program a) where
-    fmap fn (Program is m q t) = Program is (fn m) q t
+    fmap fn (Program (x:is) m q t) = Program is (fn m) q t
 
   day18a :: String -> Int
   day18a s = let is = rights $ map parseInput $ lines s
@@ -32,19 +32,19 @@ module Advent.Day18 (day18a, day18b) where
   runProgram p p' is = 0
 
   runInstruction :: Program Instruction (M.Map Char Int) -> [Instruction] -> Program Instruction (M.Map Char Int)
-  runInstruction p [] = p
-  runInstruction p ((Set c i):is) = runInstruction (fmap (\m -> M.insert c (lookup'' m i) m) p) is
-  runInstruction p ((Add c i):is) = runInstruction (fmap (\m -> update' m (+) c (lookup'' m i)) p) is
-  runInstruction p ((Mul c i):is) = runInstruction (fmap (\m -> update' m (*) c (lookup'' m i)) p) is
-  runInstruction p ((Mod c i):is) = runInstruction (fmap (\m -> update' m mod c (lookup'' m i)) p) is
-  runInstruction p ((Snd c):is) = runInstruction (fmap (\m -> M.insert '_' (lookup' m c) m) p) is
-  runInstruction p@(Program _ m _ _) ((Rcv c):is) = if lookup' m c == 0 then runInstruction p is else p
-  runInstruction p@(Program _ m _ _) (s@(Jgz c i):is) = if lookup' m c > 0 then runInstruction p (runJgz p (lookup'' m i) s) else runInstruction p is
+  runInstruction p@(Program [] _ _ _) _ = p
+  runInstruction p@(Program ((Set c i):is) _ _ _) is' = runInstruction (fmap (\m -> M.insert c (lookup'' m i) m) p) is'
+  runInstruction p@(Program ((Add c i):is) _ _ _) is'  = runInstruction (fmap (\m -> update' m (+) c (lookup'' m i)) p) is'
+  runInstruction p@(Program ((Mul c i):is) _ _ _) is' = runInstruction (fmap (\m -> update' m (*) c (lookup'' m i)) p) is'
+  runInstruction p@(Program ((Mod c i):is) _ _ _) is' = runInstruction (fmap (\m -> update' m mod c (lookup'' m i)) p) is'
+  runInstruction p@(Program ((Snd c):is) _ _ _) is' = runInstruction (fmap (\m -> M.insert '_' (lookup' m c) m) p) is'
+  runInstruction p@(Program ((Rcv c):is) m _ _) is' = if lookup' m c == 0 then runInstruction (fmap id p) is' else p
+  runInstruction p@(Program (s@(Jgz c i):is) m q t) is' = if lookup' m c > 0 then runInstruction (Program (runJgz is' (lookup'' m i) s) m q t) is' else runInstruction (fmap id p) is'
 
-  runJgz :: Program Instruction (M.Map Char Int) -> Int -> Instruction -> [Instruction]
-  runJgz p@(Program s _ _ _) v i = let idx = findIndex' i s
-                                       s' = drop (idx + v) s
-                                   in s'
+  runJgz :: [Instruction] -> Int -> Instruction -> [Instruction]
+  runJgz is v i = let idx = findIndex' i is
+                      s' = drop (idx + v) is
+                  in s'
 
   update' :: M.Map Char Int -> (Int -> Int -> Int) -> Char -> Int -> M.Map Char Int
   update' m fn c i = M.insert c (fn (lookup' m c) i) m
