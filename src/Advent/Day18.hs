@@ -14,7 +14,8 @@ module Advent.Day18 (day18a, day18b) where
 
   day18a :: String -> Int
   day18a s = let is = rights $ map parseInput $ lines s
-             in runInstruction (Program is M.empty []) is
+                 (Program _ m _) = runInstruction (Program is M.empty []) is
+             in lookup' m '_'
 
   day18b :: String -> Int
   day18b s = let is = rights $ map parseInput $ lines s
@@ -23,17 +24,17 @@ module Advent.Day18 (day18a, day18b) where
              in 0
 
 
-  runInstruction :: Program -> [Instruction] -> Int
-  runInstruction p [] = 0
+  runInstruction :: Program -> [Instruction] -> Program
+  runInstruction p [] = p
   runInstruction p@(Program s m q) ((Set c i):is) = runInstruction (Program s (M.insert c (lookup'' m i) m) q) is
   runInstruction p@(Program s m q) ((Add c i):is) = runInstruction (Program s (update' m (+) c (lookup'' m i)) q) is
   runInstruction p@(Program s m q) ((Mul c i):is) = runInstruction (Program s (update' m (*) c (lookup'' m i)) q) is
   runInstruction p@(Program s m q) ((Mod c i):is) = runInstruction (Program s (update' m mod c (lookup'' m i)) q) is
   runInstruction p@(Program s m q) ((Snd c):is) = runInstruction (Program s (M.insert '_' (lookup' m c) m) q) is
-  runInstruction p@(Program s m q) ((Rcv c):is) = if lookup' m c == 0 then runInstruction p is else lookup' m '_'
+  runInstruction p@(Program s m q) ((Rcv c):is) = if lookup' m c == 0 then runInstruction p is else p
   runInstruction p@(Program s m q) (s'@(Jgz c i):is) = if lookup' m c > 0 then runJgz p (lookup'' m i) s' is else runInstruction p is
 
-  runJgz :: Program -> Int -> Instruction -> [Instruction] -> Int
+  runJgz :: Program -> Int -> Instruction -> [Instruction] -> Program
   runJgz p@(Program s m _) v i is = let idx = findIndex' i s
                                         s' = drop (idx + v) s
                                     in runInstruction p s'
