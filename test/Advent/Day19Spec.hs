@@ -16,3 +16,8 @@ module Advent.Day19Spec (spec) where
         dir <- getCurrentDirectory
         csv <- readFile (dir ++ "/test/day19.csv")
         day19a csv `shouldBe` "ABCDEF"
+    describe "day19b" $ do
+      it "should find number of moves through maze" $ do
+        dir <- getCurrentDirectory
+        csv <- readFile (dir ++ "/test/day19.csv")
+        day19b csv `shouldBe` 38
