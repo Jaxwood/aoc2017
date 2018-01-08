@@ -49,7 +49,6 @@ module Advent.Day19 (day19a, day19b) where
   move tss (Cross (x,y), Left') = case getToken (succ x, y) tss of -- up or down?
                                    Nothing -> (getToken (pred x, y) tss, Up)
                                    (Just t) -> (Just t, Down)
-  move tss (t,d) = error (show (t,d))
 
   -- utility
 
