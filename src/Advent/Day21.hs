@@ -1,4 +1,4 @@
-module Advent.Day21 (day21a, day21b, flip', flip'') where
+module Advent.Day21 (day21a, day21b) where
 
   import Data.List
 
@@ -8,8 +8,11 @@ module Advent.Day21 (day21a, day21b, flip', flip'') where
   day21b :: String -> Int
   day21b s = 0
 
-  rotate :: [[Char]] -> [[Char]]
-  rotate iss = iss
+  pattern :: [[Char]] -> [[[Char]]]
+  pattern iss = (flip' iss):(flip'' iss):(rotate iss)
+
+  rotate :: [[Char]] -> [[[Char]]]
+  rotate iss = take 4 $ iterate (map reverse . transpose) iss
 
   flip' :: [[Char]] -> [[Char]]
   flip' = reverse

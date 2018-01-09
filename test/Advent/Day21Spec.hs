@@ -2,7 +2,7 @@ module Advent.Day21Spec (spec) where
 
   import Test.Hspec
   import System.Directory
-  import Advent.Day21 (day21a, day21b, flip', flip'')
+  import Advent.Day21 (day21a, day21b)
 
 
   prettyPrint :: [[Char]] -> [IO ()]
@@ -20,11 +20,3 @@ module Advent.Day21Spec (spec) where
         dir <- getCurrentDirectory
         csv <- readFile (dir ++ "/test/day21.csv")
         day21a csv `shouldBe` 12
-      it "flips top and bottom" $ do
-        flip' [".#.","..#","###"] `shouldBe` ["###","..#", ".#."]
-      it "flips top and bottom evenly" $ do
-        flip' [".#..", "...#", "#..#", "####"] `shouldBe` ["####", "#..#", "...#", ".#.."]
-      it "flips left and right" $ do
-        flip'' [".#.","..#","###"] `shouldBe` [".#.","#..","###"]
-      it "flips left and right evenly" $ do
-        flip'' [".#..", "...#", "#..#", "####"] `shouldBe` ["..#.", "#...", "#..#", "####"]
