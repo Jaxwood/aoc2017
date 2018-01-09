@@ -13,11 +13,20 @@ module Advent.Day20 (day20a, day20b) where
 
   data Particle = Particle Position Velocity Acceleration deriving (Show,Eq)
 
-  day20a :: String -> [Particle]
-  day20a s = map tick $ map (right . parseInput) $ lines s
+  day20a :: String -> Int
+  day20a s = fst $ mimimum' $ map (iterate' 10000) $ zip [0..] $ map (right . parseInput) $ lines s
 
   day20b :: String -> Int
   day20b s = 0
+
+  mimimum' :: [(Int,Int)] -> (Int,Int)
+  mimimum' = foldr1 (\x acc -> if snd x < snd acc then x else acc)
+
+  iterate' :: Int -> (Int, Particle) -> (Int,Int)
+  iterate' t (i,p) = last $  map (\x -> (i,manhattan x)) $ take t $ iterate tick p
+
+  manhattan :: Particle -> Int
+  manhattan (Particle (Position x y z) _ _) = (abs x + abs y + abs z)
 
   tick :: Particle -> Particle
   tick (Particle (Position x y z) (Velocity x' y' z') (Acceleration x'' y'' z'')) =
