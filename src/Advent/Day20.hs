@@ -14,10 +14,17 @@ module Advent.Day20 (day20a, day20b) where
   data Particle = Particle Position Velocity Acceleration deriving (Show,Eq)
 
   day20a :: String -> [Particle]
-  day20a s = map (right . parseInput) $ lines s
+  day20a s = map tick $ map (right . parseInput) $ lines s
 
   day20b :: String -> Int
   day20b s = 0
+
+  tick :: Particle -> Particle
+  tick (Particle (Position x y z) (Velocity x' y' z') (Acceleration x'' y'' z'')) =
+    let v = (x'+x'')
+        v' = (y'+y'')
+        v'' = (z'+z'')
+    in (Particle (Position (x+v) (y+v') (z+v'')) (Velocity v v' v'') (Acceleration x'' y'' z''))
 
   -- utility
 
