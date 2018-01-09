@@ -14,4 +14,4 @@ module Advent.Day20Spec (spec) where
       it "should find particle closest to <0,0,0>" $ do
         dir <- getCurrentDirectory
         csv <- readFile (dir ++ "/test/day20.csv")
-        day20a csv `shouldBe` 0
+        day20a csv `shouldBe` []
