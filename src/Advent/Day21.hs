@@ -4,13 +4,16 @@ module Advent.Day21 (day21a, day21b) where
   import Text.Parsec
   import Text.Parsec.String
 
-  data Rule = Rule [[Char]] [[Char]] deriving (Show,Eq)
+  data Rule = Rule [[[Char]]] [[Char]] deriving (Show,Eq)
 
   day21a :: String -> [Rule]
   day21a = map (right . parseInput) . lines
 
   day21b :: String -> Int
   day21b s = 0
+
+  initial :: [[Char]]
+  initial = [".#.", "..#", "###"]
 
   pattern :: [[Char]] -> [[[Char]]]
   pattern iss = (flip' iss):(flip'' iss):(rotate iss)
@@ -47,4 +50,4 @@ module Advent.Day21 (day21a, day21b) where
     _ <- string "=>"
     _ <- space
     to <- sepBy (many1 $ choice [try $ char '.', char '#']) $ char '/'
-    return $ Rule from to
+    return $ Rule (pattern from) to
