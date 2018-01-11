@@ -1,19 +1,47 @@
-module Advent.Day21 (day21a, day21b) where
+module Advent.Day21 (day21a, day21b, stich) where
 
   import Data.List
+  import qualified Data.List.Split as S
   import Text.Parsec
   import Text.Parsec.String
 
   data Rule = Rule [[[Char]]] [[Char]] deriving (Show,Eq)
 
-  day21a :: String -> [Rule]
-  day21a = map (right . parseInput) . lines
+  day21a :: String -> [[Char]] -- Int
+  day21a s = let rs = map (right . parseInput) $ lines s
+                 seed = next initial  
+                 its = iterate (stich . expand rs . next) $ initial
+             in its !! 2 -- on $ its !! 2
 
-  day21b :: String -> Int
-  day21b s = 0
+  day21b :: String -> [Rule]
+  day21b s = []
 
   initial :: [[Char]]
   initial = [".#.", "..#", "###"]
+
+  stich :: [[[Char]]] -> [[Char]]
+  stich isss = concat $ concatMap transpose $ transpose $ S.chunksOf 2 isss
+
+  next :: [[Char]] -> [[[Char]]]
+  next iss
+    | size iss `mod` 2 == 0 = divide 2 iss
+    | size iss `mod` 3 == 0 = divide 3 iss
+    | otherwise = error "not evenly sized"
+
+  expand :: [Rule] -> [[[Char]]] -> [[[Char]]]
+  expand _ [] = []
+  expand rs (iss:isss) = case find' rs iss of
+    Nothing -> iss:(expand rs isss)
+    (Just a) -> a:(expand rs isss)
+
+  find' :: [Rule] -> [[Char]] -> Maybe [[Char]]
+  find' [] iss = Nothing
+  find' ((Rule from to):rs) iss = case find (==iss) from of
+    (Just a) -> (Just to)
+    Nothing -> find' rs iss
+
+  divide :: Int -> [[Char]] -> [[[Char]]]
+  divide i iss = concatMap (S.chunksOf i) $ transpose $ map (S.chunksOf i) iss
 
   pattern :: [[Char]] -> [[[Char]]]
   pattern iss = (flip' iss):(flip'' iss):(rotate iss)
