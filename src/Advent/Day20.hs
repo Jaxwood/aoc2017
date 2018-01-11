@@ -12,11 +12,15 @@ module Advent.Day20 (day20a, day20b) where
   data Velocity = Velocity X Y Z deriving (Show,Eq)
   data Acceleration = Acceleration X Y Z deriving (Show,Eq)
 
-  data Particle = Particle Position Velocity Acceleration deriving (Show,Eq)
+  data Particle = Particle Position Velocity Acceleration deriving (Show)
 
   instance Ord Particle where
     compare p@(Particle (Position x y z) _ _) p'@(Particle (Position x' y' z') _ _) =
-      if collisions p p' then EQ else if sum [x, y, z] > sum [x',y',z'] then GT else LT
+      if p == p' then EQ else if sum [x, y, z] > sum [x',y',z'] then GT else GT
+
+  instance Eq Particle where
+    (==) (Particle (Position x y z) _ _) (Particle (Position x' y' z') _ _) =
+      and [x == x', y == y', z == z']
 
   day20a :: String -> Int
   day20a s = fst $ mimimum' $ map (iterate' 10000) $ zip [0..] $ map (right . parseInput) $ lines s
@@ -33,15 +37,11 @@ module Advent.Day20 (day20a, day20b) where
   iterate'' :: Int -> [Particle] -> [Particle]
   iterate'' 10000 ps = ps
   iterate'' i ps = let ps' = map tick ps
-                       ps'' = concat $ filter (\x -> length x == 1) $ groupBy collisions $ sortBy (\p p' -> p `compare` p') ps'
+                       ps'' = concat $ filter (\x -> length x == 1) $ group ps'
                    in iterate'' (succ i) ps''
 
   manhattan :: Particle -> Int
   manhattan (Particle (Position x y z) _ _) = (abs x + abs y + abs z)
-
-  collisions :: Particle -> Particle -> Bool
-  collisions (Particle (Position x y z) _ _) (Particle (Position x' y' z') _ _) =
-    and [x == x', y == y', z == z']
 
   tick :: Particle -> Particle
   tick (Particle (Position x y z) (Velocity x' y' z') (Acceleration x'' y'' z'')) =
