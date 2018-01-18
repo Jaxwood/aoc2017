@@ -1,4 +1,4 @@
-module Advent.Day21 (day21a, day21b, stich) where
+module Advent.Day21 (day21a, day21b) where
 
   import Data.List
   import qualified Data.List.Split as S
@@ -7,31 +7,36 @@ module Advent.Day21 (day21a, day21b, stich) where
 
   data Rule = Rule [[[Char]]] [[Char]] deriving (Show,Eq)
 
-  day21a :: String -> [[Char]] -- Int
-  day21a s = let rs = map (right . parseInput) $ lines s
-                 seed = next initial  
-                 its = iterate (stich . expand rs . next) $ initial
-             in its !! 2 -- on $ its !! 2
+  day21a :: String -> Int
+  day21a s = let rs = rules s
+                 itr = iterate (stich . expand rs . next) $ initial
+             in on $ itr !! 2
 
   day21b :: String -> [Rule]
   day21b s = []
+
+  rules :: String -> [Rule]
+  rules = map (right . parseInput) . lines
 
   initial :: [[Char]]
   initial = [".#.", "..#", "###"]
 
   stich :: [[[Char]]] -> [[Char]]
-  stich isss = concat $ concatMap transpose $ transpose $ S.chunksOf 2 isss
+  stich is = map concat $ transpose  $ map concat $ S.chunksOf (chunckSize is) is
+
+  chunckSize :: [[[Char]]] -> Int
+  chunckSize = floor . sqrt . fromIntegral . length
 
   next :: [[Char]] -> [[[Char]]]
   next iss
-    | size iss `mod` 2 == 0 = divide 2 iss
-    | size iss `mod` 3 == 0 = divide 3 iss
+    | length iss `mod` 2 == 0 = divide 2 iss
+    | length iss `mod` 3 == 0 = divide 3 iss
     | otherwise = error "not evenly sized"
 
   expand :: [Rule] -> [[[Char]]] -> [[[Char]]]
   expand _ [] = []
   expand rs (iss:isss) = case find' rs iss of
-    Nothing -> iss:(expand rs isss)
+    Nothing -> error $ show iss
     (Just a) -> a:(expand rs isss)
 
   find' :: [Rule] -> [[Char]] -> Maybe [[Char]]
@@ -44,7 +49,13 @@ module Advent.Day21 (day21a, day21b, stich) where
   divide i iss = concatMap (S.chunksOf i) $ transpose $ map (S.chunksOf i) iss
 
   pattern :: [[Char]] -> [[[Char]]]
-  pattern iss = (flip' iss):(flip'' iss):(rotate iss)
+  pattern iss = let rs = rotate iss
+                    fp = map flip' rs
+                    fp' = map flip'' rs
+                in rmdups $ rs ++ fp ++ fp'
+
+  rmdups :: (Ord a) => [a] -> [a]
+  rmdups = map head . group . sort
 
   rotate :: [[Char]] -> [[[Char]]]
   rotate iss = take 4 $ iterate (map reverse . transpose) iss
@@ -54,9 +65,6 @@ module Advent.Day21 (day21a, day21b, stich) where
 
   flip'' :: [[Char]] -> [[Char]]
   flip'' = map reverse
-
-  size :: [[Char]] -> Int
-  size = length
 
   on :: [[Char]] -> Int
   on = length . filter (=='#') . concat
