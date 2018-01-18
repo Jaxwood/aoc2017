@@ -3,7 +3,7 @@ module Advent.Day23Spec (spec) where
   import qualified Data.Map as M
   import Test.Hspec
   import System.Directory
-  import Advent.Day23 (day23a, day23b, update, Value(Number,Register))
+  import Advent.Day23 (day23a, day23b)
 
   main :: IO ()
   main = do
@@ -15,9 +15,9 @@ module Advent.Day23Spec (spec) where
       it "should calculate times mul is called" $ do
         dir <- getCurrentDirectory
         csv <- readFile (dir ++ "/test/day23.csv")
-        day23a csv `shouldBe` 0
-    describe "update" $ do
-      it "should update map" $ do
-        update 'a' (Number 3) (M.fromList [('a',2)]) (flip (-))  `shouldBe` M.empty
-      it "should update map" $ do
-        update 'a' (Number (-3)) (M.fromList [('a',2)]) ( (-))  `shouldBe` M.empty
+        day23a csv `shouldBe` 9409
+    describe "day23b" $ do
+      it "should find value of register h" $ do
+        dir <- getCurrentDirectory
+        csv <- readFile (dir ++ "/test/day23.csv")
+        day23b csv `shouldBe` 0

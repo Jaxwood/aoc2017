@@ -1,4 +1,4 @@
-module Advent.Day23 (day23a, day23b, update, Value(Number,Register)) where
+module Advent.Day23 (day23a, day23b) where
 
   import Data.List
   import qualified Data.Map.Strict as M
@@ -14,7 +14,10 @@ module Advent.Day23 (day23a, day23b, update, Value(Number,Register)) where
              in run (M.fromList [(x,0)|x<-['a'..'h']]) is is
 
   day23b :: String -> Int
-  day23b s = 0
+  day23b s = let is = map (right . parseInput) $ lines s
+                 m = M.fromList [(x,0)|x<-['a'..'h']]
+                 m' = run (M.adjust (const 1) 'a' m) is is
+             in m M.! 'h'
 
   run :: M.Map Char Int -> [Instruction] -> [Instruction] -> Int
   run _ [] _ = 0
