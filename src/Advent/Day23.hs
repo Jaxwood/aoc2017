@@ -16,8 +16,16 @@ module Advent.Day23 (day23a, day23b) where
   day23b :: String -> Int
   day23b s = let is = map (right . parseInput) $ lines s
                  m = M.fromList [(x,0)|x<-['a'..'h']]
-                 m' = run (M.adjust (const 1) 'a' m) is is
-             in m M.! 'h'
+             in run' (M.adjust (const 1) 'a' m) is is
+
+  run' :: M.Map Char Int -> [Instruction] -> [Instruction] -> Int
+  run' m [] _ = m M.! 'h'
+  run' m ((Set x v):is) is' = run' (update x v m const) is is'
+  run' m ((Sub x v):is) is' = run' (update x v m (flip (-))) is is'
+  run' m ((Add x v):is) is' = run' (update x v m (flip (+))) is is'
+  run' m ((Mul x v):is) is' = run' (update x v m (flip (*))) is is'
+  run' m (i@(Jnz (Number x) v):is) is' = if x == 0 then run' m is is' else run' m (jump m v i is') is'
+  run' m (i@(Jnz (Register x) v):is) is' = if m M.! x == 0 then run' m is is' else run' m (jump m v i is') is'
 
   run :: M.Map Char Int -> [Instruction] -> [Instruction] -> Int
   run _ [] _ = 0
