@@ -69,11 +69,14 @@ module Advent.Day23 (day23a, day23b) where
     _ <- space
     val <- many1 $ choice [try $ char '-', try digit, letter]
     return $ case instruction of
-               "mul" -> Mul id (if any isDigit val then Number $ read val else Register $ head val)
-               "add" -> Add id (if any isDigit val then Number $ read val else Register $ head val)
-               "set" -> Set id (if any isDigit val then Number $ read val else Register $ head val)
-               "sub" -> Sub id (if any isDigit val then Number $ read val else Register $ head val)
+               "mul" -> Mul id $ value val
+               "add" -> Add id $ value val
+               "set" -> Set id $ value val
+               "sub" -> Sub id $ value val
 
+  value :: String -> Value
+  value val = if any isDigit val then Number $ read val else Register $ head val
+  
   parseJnz :: Parser Instruction
   parseJnz = do
     _ <- string "jnz"
