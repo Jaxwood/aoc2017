@@ -7,7 +7,7 @@ module Advent.Day23 (day23a, day23b) where
   import Text.Parsec.String
 
   data Value = Number Int | Register Char deriving (Show,Eq) 
-  data Instruction = Set Char Value | Add Char Value | Mul Char Value | Sub Char Value | Jnz Value Value deriving (Eq)
+  data Instruction = Set Char Value | Mul Char Value | Sub Char Value | Jnz Value Value deriving (Eq)
 
   day23a :: String -> Int
   day23a s = let is = map (right . parseInput) $ lines s
@@ -22,7 +22,6 @@ module Advent.Day23 (day23a, day23b) where
   run' m [] _ = m M.! 'h'
   run' m ((Set x v):is) is' = run' (update x v m const) is is'
   run' m ((Sub x v):is) is' = run' (update x v m (flip (-))) is is'
-  run' m ((Add x v):is) is' = run' (update x v m (flip (+))) is is'
   run' m ((Mul x v):is) is' = run' (update x v m (flip (*))) is is'
   run' m (i@(Jnz (Number x) v):is) is' = if x == 0 then run' m is is' else run' m (jump m v i is') is'
   run' m (i@(Jnz (Register x) v):is) is' = if m M.! x == 0 then run' m is is' else run' m (jump m v i is') is'
@@ -31,7 +30,6 @@ module Advent.Day23 (day23a, day23b) where
   run _ [] _ = 0
   run m ((Set x v):is) is' = run (update x v m const) is is'
   run m ((Sub x v):is) is' = run (update x v m (flip (-))) is is'
-  run m ((Add x v):is) is' = run (update x v m (flip (+))) is is'
   run m ((Mul x v):is) is' = succ $ run (update x v m (flip (*))) is is'
   run m (i@(Jnz (Number x) v):is) is' = if x == 0 then run m is is' else run m (jump m v i is') is'
   run m (i@(Jnz (Register x) v):is) is' = if m M.! x == 0 then run m is is' else run m (jump m v i is') is'
@@ -63,16 +61,18 @@ module Advent.Day23 (day23a, day23b) where
 
   parseInstruction :: Parser Instruction
   parseInstruction = do
-    instruction <- choice [try $ string "mul", try $ string "add", try $ string "set", string "sub"]
+    instruction <- choice [try $ string "mul", try $ string "set", string "sub"]
     _ <- space
     id <- letter
     _ <- space
     val <- many1 $ choice [try $ char '-', try digit, letter]
     return $ case instruction of
-               "mul" -> Mul id (if any isDigit val then Number $ read val else Register $ head val)
-               "add" -> Add id (if any isDigit val then Number $ read val else Register $ head val)
-               "set" -> Set id (if any isDigit val then Number $ read val else Register $ head val)
-               "sub" -> Sub id (if any isDigit val then Number $ read val else Register $ head val)
+               "mul" -> Mul id $ value val
+               "set" -> Set id $ value val
+               "sub" -> Sub id $ value val
+
+  value :: String -> Value
+  value val = if any isDigit val then Number $ read val else Register $ head val
 
   parseJnz :: Parser Instruction
   parseJnz = do
