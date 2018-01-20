@@ -19,5 +19,5 @@ module Advent.Day23Spec (spec) where
     describe "day23b" $ do
       it "should find value of register h" $ do
         dir <- getCurrentDirectory
-        csv <- readFile (dir ++ "/test/day23.csv")
+        csv <- readFile (dir ++ "/test/day23b.csv")
         day23b csv `shouldBe` 0
