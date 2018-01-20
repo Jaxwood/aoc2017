@@ -8,16 +8,16 @@ module Advent.Day23Spec (spec) where
   main :: IO ()
   main = do
     hspec spec
+  
+  isPrime k = null [ x | x <- [2..k - 1], k `mod`x  == 0]
 
   spec :: Spec
   spec = do
     describe "day23a" $ do
-      it "should calculate times mul is called" $ do
+     it "should calculate times mul is called" $ do
         dir <- getCurrentDirectory
         csv <- readFile (dir ++ "/test/day23.csv")
         day23a csv `shouldBe` 9409
     describe "day23b" $ do
       it "should find value of register h" $ do
-        dir <- getCurrentDirectory
-        csv <- readFile (dir ++ "/test/day23b.csv")
-        day23b csv `shouldBe` 0
+        day23b `shouldBe` 913

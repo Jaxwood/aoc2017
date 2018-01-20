@@ -13,18 +13,18 @@ module Advent.Day23 (day23a, day23b) where
   day23a s = let is = map (right . parseInput) $ lines s
              in run (M.fromList [(x,0)|x<-['a'..'h']]) is is
 
-  day23b :: String -> Int
-  day23b s = let is = map (right . parseInput) $ lines s
-                 m = M.fromList $ ('a',1):[(x,0)|x<-['b'..'h']]
-             in run' m is is
+  -- Since the algorithm is super slow a better way is to analyze what it is actually doing.
+  -- There is 3 loops inside the algorithm. However the essential part is the sub -17 at the end
+  -- this basically means that the outer loops runs approx 1000 times (since c is 17000 bigger than b). 
+  -- Inside the inner loop the interesting part is the `set f 0` as that will lead to increment of the h registry.
+  -- The condition for setting `set f 0` is to find a number can be divided by `b`. The only numbers that doesn't
+  -- fulfill this is prime numbers - if we can find all non prime numbers it should lead to the correct answer.
 
-  run' :: M.Map Char Int -> [Instruction] -> [Instruction] -> Int
-  run' m [] _ = m M.! 'h'
-  run' m ((Set x v):is) is' = run' (update x v m const) is is'
-  run' m ((Sub x v):is) is' = run' (update x v m (flip (-))) is is'
-  run' m ((Mul x v):is) is' = run' (update x v m (flip (*))) is is'
-  run' m (i@(Jnz (Number x) v):is) is' = if x == 0 then run' m is is' else run' m (jump m v i is') is'
-  run' m (i@(Jnz (Register x) v):is) is' = if m M.! x == 0 then run' m is is' else run' m (jump m v i is') is'
+  day23b :: Int
+  day23b = length $ filter (not . isPrime) $ take 1001 $ [x|x<-[109900,109917..]]
+
+  isPrime :: Int -> Bool
+  isPrime k = null [ x | x <- [2..k - 1], k `mod`x  == 0]
 
   run :: M.Map Char Int -> [Instruction] -> [Instruction] -> Int
   run _ [] _ = 0
