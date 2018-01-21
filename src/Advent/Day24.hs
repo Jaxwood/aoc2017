@@ -11,6 +11,14 @@ module Advent.Day24 (day24a, day24b) where
   day24b :: String -> Int
   day24b s = 0
 
+  ramp :: [Bridge] -> [Bridge]
+  ramp = filter zero
+
+  zero :: Bridge -> Bool
+  zero (Bridge 0 _) = True
+  zero (Bridge _ 0) = True
+  zero (Bridge _ _) = False
+
   -- utility
 
   right :: Either ParseError Bridge -> Bridge
