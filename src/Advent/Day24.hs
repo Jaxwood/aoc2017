@@ -3,7 +3,11 @@ module Advent.Day24 (day24a, day24b) where
   import Text.Parsec
   import Text.Parsec.String
 
-  data Bridge = Bridge Int Int
+  data Bridge = Bridge Int Int deriving (Eq,Show)
+
+  instance Monoid Bridge where
+    mempty = Bridge 0 0
+    mappend (Bridge a b) (Bridge c d) = (Bridge (a+c) (b+d))
 
   day24a :: String -> Int
   day24a s = 0
@@ -18,6 +22,10 @@ module Advent.Day24 (day24a, day24b) where
   zero (Bridge 0 _) = True
   zero (Bridge _ 0) = True
   zero (Bridge _ _) = False
+
+  sum :: [Bridge] -> Int
+  sum bs = let (Bridge a b) = mconcat bs
+           in a + b
 
   -- utility
 
