@@ -1,5 +1,6 @@
 module Advent.Day24 (day24a, day24b) where
 
+  import Data.Monoid
   import Text.Parsec
   import Text.Parsec.String
 
@@ -15,17 +16,19 @@ module Advent.Day24 (day24a, day24b) where
   day24b :: String -> Int
   day24b s = 0
 
-  ramp :: [Bridge] -> [Bridge]
-  ramp = filter zero
+  start :: [Bridge] -> [Bridge]
+  start = filter zero
 
   zero :: Bridge -> Bool
   zero (Bridge 0 _) = True
   zero (Bridge _ 0) = True
   zero (Bridge _ _) = False
 
-  sum :: [Bridge] -> Int
-  sum bs = let (Bridge a b) = mconcat bs
-           in a + b
+  sum' :: Bridge -> Int
+  sum' (Bridge a b) = a + b
+
+  sum'' :: [Bridge] -> Int
+  sum'' = sum' . mconcat
 
   -- utility
 
