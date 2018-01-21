@@ -14,4 +14,4 @@ module Advent.Day24Spec (spec) where
      it "should find the strongest bridge" $ do
         dir <- getCurrentDirectory
         csv <- readFile (dir ++ "/test/day24.csv")
-        day24a csv `shouldBe` 0
+        day24a csv `shouldBe` []

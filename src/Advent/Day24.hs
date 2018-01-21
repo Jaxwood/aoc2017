@@ -1,5 +1,7 @@
 module Advent.Day24 (day24a, day24b) where
 
+  import Data.List
+  import Data.Monoid
   import Text.Parsec
   import Text.Parsec.String
 
@@ -9,23 +11,33 @@ module Advent.Day24 (day24a, day24b) where
     mempty = Bridge 0 0
     mappend (Bridge a b) (Bridge c d) = (Bridge (a+c) (b+d))
 
-  day24a :: String -> Int
-  day24a s = 0
+  day24a :: String -> [[Bridge]]
+  day24a s = let bs = map (right . parseInput) $ lines s
+                 zs = filter zero bs
+                 zss = map ((\\) bs . pure) zs
+             in map (uncurry $ connection 0) $ zip zss zs
 
   day24b :: String -> Int
   day24b s = 0
 
-  ramp :: [Bridge] -> [Bridge]
-  ramp = filter zero
+  connection :: Int -> [Bridge] -> Bridge -> [Bridge]
+  connection i (b:bs) n@(Bridge x y)
+    | x == i = n:b:bs
+    | y == i = n:b:bs
+
+  start :: [Bridge] -> [Bridge]
+  start = filter zero
 
   zero :: Bridge -> Bool
   zero (Bridge 0 _) = True
   zero (Bridge _ 0) = True
   zero (Bridge _ _) = False
 
-  sum :: [Bridge] -> Int
-  sum bs = let (Bridge a b) = mconcat bs
-           in a + b
+  sum' :: Bridge -> Int
+  sum' (Bridge a b) = a + b
+
+  sum'' :: [Bridge] -> Int
+  sum'' = sum' . mconcat
 
   -- utility
 
