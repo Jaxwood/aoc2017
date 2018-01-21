@@ -9,8 +9,6 @@ module Advent.Day23Spec (spec) where
   main = do
     hspec spec
   
-  isPrime k = null [ x | x <- [2..k - 1], k `mod`x  == 0]
-
   spec :: Spec
   spec = do
     describe "day23a" $ do
