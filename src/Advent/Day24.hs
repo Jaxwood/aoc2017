@@ -13,7 +13,7 @@ module Advent.Day24 (day24a, day24b) where
 
   day24a :: String -> [[Bridge]]
   day24a s = let bs = map (right . parseInput) $ lines s
-                 zs = filter zero bs
+                 zs = filter (match 0) bs
                  zss = map ((\\) bs . pure) zs
              in map (uncurry $ connection 0) $ zip zss zs
 
@@ -25,13 +25,11 @@ module Advent.Day24 (day24a, day24b) where
     | x == i = n:b:bs
     | y == i = n:b:bs
 
-  start :: [Bridge] -> [Bridge]
-  start = filter zero
-
-  zero :: Bridge -> Bool
-  zero (Bridge 0 _) = True
-  zero (Bridge _ 0) = True
-  zero (Bridge _ _) = False
+  match :: Int -> Bridge -> Bool
+  match i (Bridge a b)
+    | a == i = True
+    | b == i = True
+    | otherwise = False
 
   sum' :: Bridge -> Int
   sum' (Bridge a b) = a + b
