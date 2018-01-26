@@ -1,7 +1,7 @@
 module Advent.Day25 (day25a, day25b) where
 
   import Data.List.Split
-  import qualified Data.Vector as V
+  import qualified Data.Sequence as S
   import Text.Parsec
   import Text.Parsec.String
 
@@ -13,8 +13,8 @@ module Advent.Day25 (day25a, day25b) where
                  b = head $ map (right . parseTimes) $ drop 1 $ lines s
                  states = map parseStates $ chunksOf 10 $ drop 2 $ lines s
                  start = next states a
-                 (v, _, _) = last $ take b  $ iterate (transition states) ((V.singleton 0), 0, start)
-             in V.sum v
+                 (v, _, _) = last $ take b  $ iterate (transition states) ((S.singleton 0), 0, start)
+             in foldl (+) 0 v
 
   day25b :: String -> Int
   day25b s = 0
@@ -22,27 +22,25 @@ module Advent.Day25 (day25a, day25b) where
   next :: [TuringState] -> Char -> TuringState
   next ts c = head $ filter (\(TuringState a _ _) -> a == c) ts
 
-  transition :: [TuringState] -> (V.Vector Int, Int, TuringState) -> (V.Vector Int, Int, TuringState)
+  transition :: [TuringState] -> (S.Seq Int, Int, TuringState) -> (S.Seq Int, Int, TuringState)
   transition ts (is, idx, (TuringState _ (v,d,n) (v',d',n'))) =
-    let x = is V.!? idx
+    let x = is S.!? idx
     in case x of
-      Just 0 -> (updateVector is idx v d, nextIdx d idx, next ts n)
-      Just 1 -> (updateVector is idx v' d', nextIdx d' idx, next ts n')
+      Just 0 -> (update' is idx v, nextIdx d idx, next ts n)
+      Just 1 -> (update' is idx v', nextIdx d' idx, next ts n')
       Nothing ->
         if idx > 0
         then
-          (updateVector (V.snoc is 0) idx v d, nextIdx d idx, next ts n)
+          (update' ((S.|>) is 0) idx v, nextIdx d idx, next ts n)
         else
-          (updateVector (V.cons 0 is) 0 v d, nextIdx d 0, next ts n)
+          (update' ((S.<|) 0 is) 0 v, nextIdx d 0, next ts n)
 
   nextIdx :: Direction -> Int -> Int
   nextIdx R idx = succ idx
   nextIdx L idx = pred idx
 
-  updateVector :: V.Vector Int -> Int -> Int -> Direction -> V.Vector Int
-  updateVector is idx v d = case d of 
-                              R -> (V.//) is [(idx,v)]
-                              L -> (V.//) is [(idx,v)]
+  update' :: S.Seq Int -> Int -> Int -> S.Seq Int
+  update' is idx v = S.update idx v is
 
   -- utility
 
