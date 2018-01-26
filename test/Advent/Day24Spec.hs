@@ -15,7 +15,7 @@ module Advent.Day24Spec (spec) where
         dir <- getCurrentDirectory
         csv <- readFile (dir ++ "/test/day24.csv")
         day24a csv `shouldBe` 31
-    describe "day24a" $ do
+    describe "day24b" $ do
      it "should find the longest bridge" $ do
         dir <- getCurrentDirectory
         csv <- readFile (dir ++ "/test/day24.csv")

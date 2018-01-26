@@ -1,20 +1,48 @@
 module Advent.Day25 (day25a, day25b) where
 
   import Data.List.Split
+  import qualified Data.Vector as V
   import Text.Parsec
   import Text.Parsec.String
 
-  data TuringState = TuringState Char (Int,Int,Direction,Char) (Int,Int,Direction,Char) deriving (Eq,Show)
+  data TuringState = TuringState Char (Int,Direction,Char) (Int,Direction,Char) deriving (Eq,Show)
   data Direction = L | R deriving (Show,Eq)
 
-  day25a :: String -> [TuringState]
-  day25a s = let a = map (right . parseStart) $ lines s
-                 b = map (right . parseTimes) $ drop 1 $ lines s
+  day25a :: String -> Int
+  day25a s = let a = head $ map (right . parseStart) $ lines s
+                 b = head $ map (right . parseTimes) $ drop 1 $ lines s
                  states = map parseStates $ chunksOf 10 $ drop 2 $ lines s
-             in states
+                 start = next states a
+                 (v, _, _) = last $ take b  $ iterate (transition states) ((V.singleton 0), 0, start)
+             in V.sum v
 
   day25b :: String -> Int
   day25b s = 0
+
+  next :: [TuringState] -> Char -> TuringState
+  next ts c = head $ filter (\(TuringState a _ _) -> a == c) ts
+
+  transition :: [TuringState] -> (V.Vector Int, Int, TuringState) -> (V.Vector Int, Int, TuringState)
+  transition ts (is, idx, (TuringState _ (v,d,n) (v',d',n'))) =
+    let x = is V.!? idx
+    in case x of
+      Just 0 -> (updateVector is idx v d, nextIdx d idx, next ts n)
+      Just 1 -> (updateVector is idx v' d', nextIdx d' idx, next ts n')
+      Nothing ->
+        if idx > 0
+        then
+          (updateVector (V.snoc is 0) idx v d, nextIdx d idx, next ts n)
+        else
+          (updateVector (V.cons 0 is) 0 v d, nextIdx d 0, next ts n)
+
+  nextIdx :: Direction -> Int -> Int
+  nextIdx R idx = succ idx
+  nextIdx L idx = pred idx
+
+  updateVector :: V.Vector Int -> Int -> Int -> Direction -> V.Vector Int
+  updateVector is idx v d = case d of 
+                              R -> (V.//) is [(idx,v)]
+                              L -> (V.//) is [(idx,v)]
 
   -- utility
 
@@ -31,7 +59,7 @@ module Advent.Day25 (day25a, day25b) where
                                                 m''' = right $ parse parseStateMove "" m'
                                                 s'' = right $ parse parseStateNext "" s
                                                 s''' = right $ parse parseStateNext "" s'
-                                            in TuringState n' (0,w'',m'',s'') (1,w''',m''',s''')
+                                            in TuringState n' (w'',m'',s'') (w''',m''',s''')
 
 
   parseStart :: String -> Either ParseError Char
