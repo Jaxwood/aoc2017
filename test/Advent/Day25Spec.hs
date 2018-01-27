@@ -16,3 +16,4 @@ module Advent.Day25Spec (spec) where
         dir <- getCurrentDirectory
         csv <- readFile (dir ++ "/test/day25.csv")
         day25a csv `shouldBe` 3
+    -- 25b requires that every other puzzle is solved from day 1 - day 24

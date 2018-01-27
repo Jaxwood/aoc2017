@@ -12,35 +12,29 @@ module Advent.Day25 (day25a, day25b) where
   day25a s = let a = head $ map (right . parseStart) $ lines s
                  b = head $ map (right . parseTimes) $ drop 1 $ lines s
                  states = map parseStates $ chunksOf 10 $ drop 2 $ lines s
-                 start = next states a
+                 start = nextState states a
                  (v, _, _) = last $ take b  $ iterate (transition states) ((S.singleton 0), 0, start)
              in foldl (+) 0 v
-
-  day25b :: String -> Int
-  day25b s = 0
-
-  next :: [TuringState] -> Char -> TuringState
-  next ts c = head $ filter (\(TuringState a _ _) -> a == c) ts
 
   transition :: [TuringState] -> (S.Seq Int, Int, TuringState) -> (S.Seq Int, Int, TuringState)
   transition ts (is, idx, (TuringState _ (v,d,n) (v',d',n'))) =
     let x = is S.!? idx
     in case x of
-      Just 0 -> (update' is idx v, nextIdx d idx, next ts n)
-      Just 1 -> (update' is idx v', nextIdx d' idx, next ts n')
+      Just 0 -> (S.update idx v is, nextIdx d idx, nextState ts n)
+      Just 1 -> (S.update idx v' is, nextIdx d' idx, nextState ts n')
       Nothing ->
         if idx > 0
         then
-          (update' ((S.|>) is 0) idx v, nextIdx d idx, next ts n)
+          (S.update idx v ((S.|>) is 0), nextIdx d idx, nextState ts n)
         else
-          (update' ((S.<|) 0 is) 0 v, nextIdx d 0, next ts n)
+          (S.update 0 v ((S.<|) 0 is), nextIdx d 0, nextState ts n)
+
+  nextState :: [TuringState] -> Char -> TuringState
+  nextState ts c = head $ filter (\(TuringState a _ _) -> a == c) ts
 
   nextIdx :: Direction -> Int -> Int
   nextIdx R idx = succ idx
   nextIdx L idx = pred idx
-
-  update' :: S.Seq Int -> Int -> Int -> S.Seq Int
-  update' is idx v = S.update idx v is
 
   -- utility
 
@@ -49,6 +43,7 @@ module Advent.Day25 (day25a, day25b) where
   right (Right r) = r
 
   -- parse 
+
   parseStates :: [String] -> TuringState
   parseStates (_:n:_:w:m:s:_:w':m':s':[]) = let n' = right $ parse parseStateName "" n
                                                 w'' = right $ parse parseStateWrite "" w
